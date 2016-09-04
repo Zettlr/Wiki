@@ -1,0 +1,34 @@
+/* DEPRECATED: This file declares styles used to fix some CodeMirror issues */
+
+.CodeMirror {
+    /* Auto resize on more than ten lines but auto show at least 10 lines height */
+    height:100%;
+    width:100%;
+    margin:6px;
+
+    -webkit-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow:    inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+    box-shadow:         inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+}
+
+.CodeMirror pre {
+    font-family: 'Bitstream', Menlo, monospace;
+}
+
+.CodeMirror-scroll {
+    //min-height:300px;
+    height:500px;
+    cursor:text;
+}
+
+.CodeMirror .cm-gfm-wiki
+{
+    color:@color-primary;
+    background-color:#eee;
+}
+
+/* Make the cursor more fancy */
+.CodeMirror .CodeMirror-cursor
+{
+    border-left:2px solid @color-primary;
+}

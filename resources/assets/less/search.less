@@ -1,0 +1,24 @@
+/* This file defines search result classes */
+
+div.list-element, a.list-element
+{
+    .list-element-header {
+        font-size: 24px;
+        margin:0px;
+        padding:0px;
+    }
+
+    .list-element-content {
+        padding:10px;
+    }
+
+    padding:10px 5px;
+    background-color:#eee;
+    border-bottom:1px solid #ddd;
+    display:block;
+
+    &:hover {
+        color:inherit;
+        background-color:lighten(@color-primary, 40%);
+    }
+}

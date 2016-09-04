@@ -1,0 +1,44 @@
+/* This file defines classes and IDs used by the tabs() jQuery plugin */
+
+div.tab-nav
+{
+    display:table;
+    table-layout:fixed;
+    width:100%;
+
+    ul {
+        display:table-row;
+        margin:0px;
+        padding:0px;
+
+        li {
+            display:table-cell;
+            list-style:none;
+            text-align:center;
+            margin:0px;
+            padding:0px;
+            background-color:#005C94; /* Primary color darkened 10% */
+            transition:0.2s all ease;
+
+            a {
+                color:white;
+                display:block;
+                text-decoration: none;
+                border:none;
+                border-bottom:1px solid @color-primary;
+                line-height:300%;
+
+                /* Prevent this ugly gray line around links */
+                &:focus {
+                    outline:0;
+                }
+            }
+
+            /* jQueryUI tabs-specific active-modes */
+            &:hover, &[aria-selected="true"] {
+                background-color:@color-primary;
+                transition:0.2s all ease;
+            }
+        }
+    }
+}

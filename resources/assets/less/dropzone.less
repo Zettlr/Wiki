@@ -1,0 +1,67 @@
+/* This file declares styles used by the dropzone.js plugin */
+
+div#dropzone {
+    min-height:200px;
+    height:75%;
+    overflow:scroll;
+    padding:10px;
+    margin-top:20px;
+
+    // Only show the drop files message when there are none in queue
+    &:not(.dz-started) {
+        &:before {
+            content: "Drop files here or click to upload";
+            text-align:center;
+            color:@color-darker;
+            position:absolute;
+            top:0;
+            bottom:0;
+            right:0;
+            left:0;
+            display:block;
+            padding:20px;
+        }
+
+        // And also only before show the border
+        border:10px solid @color-darker;
+        cursor:pointer;
+        // To show the text inside the element
+        position:relative;
+    }
+}
+
+div.dz-preview {
+    border:1px solid @color-muted;
+    margin:5px;
+    padding:2px;
+    clear:both;
+
+    .dz-image {
+        display:inline-block;
+        float:left;
+
+        img {
+            margin:5px;
+            -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+            -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+            box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+        }
+    }
+
+    a.dz-remove {
+        display:inline-block;
+    }
+
+    .dz-details {
+        display:none;
+    }
+
+    .dz-img-info {
+        width:80%;
+    }
+
+    // Should be hidden at first
+    .dz-success-mark, .dz-error-mark {
+        display:none;
+    }
+}

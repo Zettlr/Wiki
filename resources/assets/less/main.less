@@ -1,0 +1,54 @@
+/* Main style file for ZettlrWiki */
+
+/* Variables */
+@color-primary:     #2467DB; // #00A8E0;
+@color-warning:     darken(#FCFC2D, 15%);
+// @color-warning:     #ffff5f;
+@color-error:       #DE5757;
+@color-success:     #2EC94D;
+@color-muted:       #aaaaaa;
+
+@color-black:       #333333;
+@color-dark:        lighten(@color-black, 20%);
+@color-darker:      lighten(@color-black, 40%);
+@color-lighter:     lighten(@color-black, 60%);
+@color-light:       lighten(@color-black, 70%); // ~ #e5e5e5
+@color-white:       #eeeeee;
+
+@font-size-basic:   16px;
+@font-size-buttons: @font-size-basic * 0.8;
+@font-size-article: @font-size-basic * 1.375; // ~ 22px
+@font-family-serif: GentiumPlus, "Georgia", "Times New Roman", serif;
+@font-family-sans: Lato, "Helvetica Neue", "Arial", sans-serif;
+@font-family-monospace: "Menlo Regular", "OCB", monospace;
+
+// First import fonts
+@import "fonts.less";                       // Fonts: Gentium, Lato, Menlo
+
+// Second rudimental styles
+@import "basic.less";                       // Rudimental styles (*, body)
+
+// Third basic typography
+@import "typography.less";                  // Element styles (a, h1-h6, ...)
+
+// Fourth container styles
+@import "container.less";                   // Container (.container, .row, footer)
+
+// Fifth classes and IDs
+@import "classes.less";                     // Classes (button, label, alert, ...)
+
+// Sixth specific styles for different plugins
+@import "forms.less";                       // Only formular elements
+@import "navbar.less";                      // The top level navigation
+@import "page_display.less";                // Article (->page) content styling
+@import "search.less";                      // Search result display
+@import "toc.less";                         // Table of contents
+@import "modal.less";                       // Helper classes for modals
+@import "burger_button.less";               // Currently unused: Menu button
+@import "media_library.less";               // Media library plugin
+@import "tabs.less";                        // tabs-jQuery-plugin styles
+@import "dropzone.less";                    // Dropzone.js plugin
+@import "codemirror.less";                  // DEPRECATED: CodeMirror plugin
+@import "contenttools.less";                // ContentTools plugin
+
+@import "font_awesome/font-awesome.less";             // Font Awesome

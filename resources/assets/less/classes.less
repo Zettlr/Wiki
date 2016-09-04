@@ -1,0 +1,273 @@
+/* This file defines generic classes (like buttons, alerts, labels, etc.) */
+
+/*
+* CONTENTS
+*
+* 1. Generic helper classes
+* 2. Button classes
+* 3. Label and highlight classes
+* 4. "task button" classes
+* 5. The .brand - class (bottom right in footer)
+*
+*/
+
+/*
+********************************
+**** Generic helper classes ****
+********************************
+*/
+
+.hidden {
+    // Needs to overwrite potential other display-settings
+    display:none !important;
+}
+
+.float-right{
+    float:right;
+}
+
+.float-left {
+    float:left;
+}
+
+.fixed-bottom-right {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+}
+
+/*
+************************
+**** Button classes ****
+************************
+*/
+
+a.button
+{
+    display:inline-block;
+    padding:10px;
+    border:1px solid lighten(@color-primary, 35%);
+    border-radius:0px;
+    color:@color-black;
+    background-color:white;
+    font-size:@font-size-buttons;
+
+    &:hover {
+        background-color:white;
+        border-color:@color-primary;
+        color:@color-primary;
+    }
+
+    &.success {
+        border:1px solid lighten(@color-success, 20%);
+        &:hover {
+            color:@color-success;
+            border:1px solid @color-success;
+        }
+    }
+
+    &.error {
+        border:1px solid lighten(@color-error, 20%);
+        &:hover {
+            color:@color-error;
+            border:1px solid @color-error;
+        }
+    }
+
+    &.warning {
+        border:1px solid @color-warning;
+        &:hover {
+            color:@color-warning;
+            border:1px solid lighten(@color-warning, 15%);
+        }
+    }
+
+    &.muted, &.muted:hover {
+        color:@color-muted;
+        border:1px solid @color-muted;
+        cursor:not-allowed;
+    }
+
+    // Don't show when printing
+    @media print {
+        display:none;
+    }
+}
+
+/*
+***********************************
+**** Highlight & label classes ****
+***********************************
+*/
+
+span
+{
+    &.highlight {
+        // Used for highlighted search terms
+        background-color:yellow;
+    }
+
+    &.label-primary,
+    &.label-warning,
+    &.label-error,
+    &.label-success,
+    &.label-muted {
+        border-radius:4px;
+        padding:2px 8px;
+        margin:0px 8px;
+        font-family:'Lato', sans-serif;
+        vertical-align: text-top;
+        color:white;
+        font-size:@font-size-buttons;
+        font-weight:200;
+    }
+
+    &.label-primary {
+        background-color:@color-primary;
+    }
+
+    &.label-warning {
+        background-color:@color-warning;
+    }
+
+    &.label-error {
+        background-color:@color-error;
+    }
+
+    &.label-success {
+        background-color:@color-success;
+    }
+
+    &.label-muted {
+        background-color:@color-muted;
+    }
+}
+
+/*
+***********************
+**** Alert classes ****
+***********************
+*/
+
+div.alert {
+    text-align: center;
+    padding:10px;
+    margin:10px;
+
+    &.primary {
+        background-color:lighten(@color-primary, 20%);
+        border:1px solid @color-primary;
+        color:darken(@color-primary, 20%);
+    }
+
+    &.warning {
+        background-color:lighten(@color-warning, 20%);
+        border:1px solid @color-warning;
+        color:darken(@color-warning, 20%);
+    }
+
+    &.error {
+        background-color:lighten(@color-error, 20%);
+        border:1px solid @color-error;
+        color:darken(@color-error, 20%);
+    }
+
+    &.success {
+        background-color:lighten(@color-success, 20%);
+        border:1px solid @color-success;
+        color:darken(@color-success, 20%);
+    }
+
+    &.muted {
+        background-color:lighten(@color-muted, 20%);
+        border:1px solid @color-muted;
+        color:darken(@color-muted, 20%);
+    }
+
+    ul {
+        text-align: left;
+    }
+}
+
+/*
+*****************************
+**** Task button classes ****
+*****************************
+*/
+
+div.task-buttons
+{
+    a.button {
+        margin:20px 5px;
+        border-radius:0px;
+    }
+
+    &.fixed {
+        position:fixed;
+        top:50px;
+        transition:.5s all ease;
+
+        .button {
+            -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.25);
+            -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.25);
+            box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.25);
+        }
+    }
+
+    // Don't show when printing
+    @media print {
+        display:none;
+    }
+}
+
+/*
+*********************
+**** Brand class ****
+*********************
+*/
+
+a.brand {
+    color:@color-darker;
+    border:none;
+    display:block;
+    line-height:30px;
+    // Overwrite padding from footer
+    margin:-5px 10px;
+    text-align: center;
+
+    strong {
+        color:@color-white;
+        background-color: @color-dark;
+        padding:3px 8px;
+    }
+
+    &:hover {
+        color:@color-primary;
+    }
+}
+
+/*
+***************************
+**** Scroll Top Button ****
+***************************
+*/
+
+#scroll-button {
+    position:fixed;
+    bottom:50px;
+    right:20px;
+    border-bottom:none;
+    line-height:150%;
+    font-size:200%;
+    color:@color-darker;
+
+    &:hover {
+        border-bottom:none;
+        color:@color-primary;
+    }
+
+    // Don't show when printing
+    @media print {
+        display:none;
+    }
+}

@@ -1,0 +1,95 @@
+/* This file declares styles needed for displaying the burger menu button */
+
+a.lines-button {
+    padding: 5px 5px;
+    transition: .3s;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 2px;
+    background-color:transparent;
+    border:none;
+    margin-top:-10px;
+    float:right;
+    background-color:@color-light;
+    opacity:0.6;
+
+    // Prevent menu to be over the button
+    z-index:1005;
+
+    &:hover {
+        opacity: 1;
+        // The background color must be important, as the burger_button.less
+        // is being included BEFORE the navigation, causing the navbar.less to
+        // overwrite the background color
+        background-color:@color-light !important;
+    }
+
+    &:active {
+        transition:0;
+    }
+
+    &:focus {
+        outline:0;
+    }
+
+    & > .lines {
+        display: inline-block;
+        width: 30px;
+        height: 3px;
+        background-color: @color-dark;
+        transition: 0.3s;
+        position: relative;
+
+        &:before, &:after {
+            display: inline-block;
+            width: 30px;
+            height: 3px;
+            background-color: @color-dark;
+            transition: 0.3s;
+            position: absolute;
+            left: 0;
+            content: '';
+        }
+
+        &:before {
+            top:10px;
+        }
+
+        &:after {
+            top:-10px;
+        }
+    }
+
+    &.open {
+        .lines {
+            background:transparent;
+
+            &:before, &after {
+                //-webkit-transform-origin: 50% 50%;
+                //transform-origin: 50% 50%;
+                top: 0;
+                width: 30px;
+            }
+
+            &:before {
+                -webkit-transform: rotate3d(0, 0, 1, 45deg);
+                transform:         rotate3d(0, 0, 1, 45deg);
+                -webkit-transform-origin: 50% 50%;
+                transform-origin: 50% 50%;
+                top:-50;
+            }
+
+            &:after {
+                -webkit-transform: rotate3d(0, 0, 1, -45deg);
+                transform:         rotate3d(0, 0, 1, -45deg);
+                -webkit-transform-origin: 50% 50%;
+                transform-origin: 50% 50%;
+                top: 0;
+            }
+        }
+    }
+
+    @media (min-width:900px) {
+        display:none;
+    }
+}

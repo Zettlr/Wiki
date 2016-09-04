@@ -1,0 +1,162 @@
+/* This file defines only the CSS for the page contents (namespace: article) */
+
+article
+{
+    p, ul, ol, blockquote {
+        font-size:22px;
+        font-family: @font-family-serif;
+        font-weight:normal;
+        padding:10px;
+        text-align: justify;
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+        margin-top:0px;
+        margin-bottom:10px;
+    }
+
+    p {
+        &:first-line {
+            padding-left:25px;
+        }
+
+        &.ref-pages-list {
+            font-family: @font-family-sans;
+            font-weight:200;
+            background-color:#ddd;
+            border-radius:4px;
+            color:#666;
+            font-size:16px;
+        }
+    }
+
+    blockquote {
+        border-left:6px solid @color-primary;
+        margin-left:20px;
+        // font-style: italic;
+        color:#666;
+
+        // To make it visible on monochrome printers
+        @media print {
+            color:@color-black;
+            border:none;
+            margin-left:7%;
+            margin-right:7%;
+        }
+    }
+
+    a {
+        margin:-2px;
+        padding-left:2px;
+        padding-right:2px;
+        border-bottom:2px solid @color-primary;
+        border-radius:2px;
+        transition:0.2s ease all;
+
+        &:hover {
+            background-color:@color-primary;
+            color:@color-white;
+        }
+
+        &.broken {
+            margin:-2px;
+            padding-left:2px;
+            padding-right:2px;
+            border-bottom:2px solid @color-error;
+            border-radius:2px;
+            transition:0.2s ease all;
+
+            &:hover {
+                background-color:@color-error;
+                color:inherit;
+            }
+        }
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        color:#335;
+
+        &:before {
+            // Make the headings stand a little bit more out
+            content: "#";
+            color:@color-success;
+            margin-right:20px;
+            margin-left:-40px;
+        }
+    }
+
+    /* Lists */
+    ul, ol
+    {
+        margin:0px;
+        margin-left:20px;
+        padding:0px;
+
+        li {
+            line-height:140%;
+            margin:4px 0px;
+        }
+
+        ul, ol {
+            li {
+                font-style:italic;
+            }
+
+            ul, ol {
+                li {
+                    font-size:80%;
+                    font-style:normal;
+                }
+            }
+        }
+    }
+
+    /* Tables */
+    table
+    {
+        padding:5px;
+        width:100%;
+        margin:20px 20px;
+
+        tr {
+            padding:0px;
+            margin:0px;
+
+            td, th {
+                margin:0px;
+                padding:4px;
+                border-bottom:1px solid #ddd;
+                font-size:20px;
+            }
+        }
+    }
+
+    /* Single elements */
+    hr
+    {
+        border:none;
+        border-bottom:1px solid #999;
+        width:90%;
+        margin-top:10px;
+        margin-bottom:20px;
+    }
+
+    /* Smaller font on printers */
+    @media print {
+        p, ul, ol, blockquote {
+            font-size:@font-size-basic;
+            line-height:110%;
+            margin-bottom:5px;
+            padding:5px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-size:@font-size-basic * 1.2;
+        }
+
+        blockquote {
+            margin:2%;
+        }
+    }
+}

@@ -1,0 +1,69 @@
+/* This file declares classes for all modal and dialog boxes used */
+
+.modal
+{
+    z-index:9999;
+    // Position the element in the middle of the page
+    position:fixed;
+    top:100px;
+    bottom:100px;
+    left:100px;
+    right:100px;
+    background-color:white;
+    border-radius:6px;
+    padding:20px;
+    // This prevents any contents from blending over the button bar at the bottom
+    padding-bottom:60px;
+
+    .tab {
+        height:100%;
+    }
+
+    .loading-spinner {
+        // Position the loading spinner central
+        width:60px;
+        height:60px;
+        margin:10% 50%;
+    }
+
+    .button-bar {
+        // Pull the button bar down
+        position:absolute;
+        bottom:0;
+        left:0;
+        right:0;
+        height:60px;
+        border-top:1px solid @color-darker;
+        padding:10px;
+
+        // Float the buttons (and everything else) to the right
+        * {
+            float:right;
+        }
+    }
+}
+
+// This class gets added to the body element to dim away everything when a modal
+// is being shown
+.dim {
+    // Prevent scrolling of the dimmed element (which should be the body)
+    position:fixed;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+
+    &::after {
+        // Completely cover ground
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        content: " ";
+        background-color:rgba(0,0,0,.5);
+
+        // Should be under the modal
+        position:fixed;
+        z-index:9998;
+    }
+}

@@ -1,0 +1,103 @@
+/* This file defines all kinds of form elements */
+
+form
+{
+    /* Form elements should only be wrapper for actions */
+    margin:0px;
+    padding:0px;
+    margin-top:20px;
+    width:100%;
+
+    input, select, textarea, option {
+        transition:0.2s ease all;
+        height:30px;
+        font-size: @font-size-basic;
+        border:1px solid @color-black;
+        color:@color-black;
+        background-color:white;
+        padding:6px;
+        display:block;
+
+        &:focus, &:hover {
+            border: 1px solid @color-primary;
+            -webkit-box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0.75);
+            -moz-box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0.75);
+            box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0.75);
+        }
+    }
+
+    // Special effects for submit buttons
+    input[type="submit"], input[type="button"] {
+
+        margin:6px;
+
+        &:hover {
+            cursor:pointer;
+        }
+    }
+
+    label {
+        display:block;
+        margin:6px 0px 6px -6px;
+        color: @color-primary;
+    }
+
+    input[readonly],
+    input[readonly="readonly"],
+    input[readonly]:focus,
+    input[readonly="readonly"]:focus {
+        color:@color-muted;
+        border:1px solid @color-muted;
+        cursor:not-allowed;
+    }
+
+    // DIV settings
+    div.input-group {
+        border:1px solid @color-darker;
+        padding:10px;
+        margin-top:30px;
+        padding-top:20px;
+        position:relative;
+
+        // Optional group title (like with formgroups)
+        span.group-title {
+            color:@color-darker;
+            background-color:white;
+            position:absolute;
+            line-height:20px;
+            top:-10px;
+            left:20px;
+            padding:0px 5px;
+        }
+    }
+
+    span[data-display="tooltip"] {
+
+        &:before {
+            content: "i";
+            width:20px;
+            height:20px;
+            display:inline-block;
+            width:20px;
+            line-height:20px;
+            border-radius:10px;
+
+            background-color:lighten(@color-primary, 20%);
+            color:white;
+            border:1px solid @color-primary;
+            font-family: @font-family-serif;
+            font-weight:bold;
+            text-align:center;
+            vertical-align: baseline;
+        }
+    }
+}
+
+div.form-row
+{
+    width:100%;
+    height:auto;
+    margin-bottom:10px;
+    padding-top:10px;
+    padding-bottom:20px;
+}

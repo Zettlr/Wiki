@@ -1,0 +1,94 @@
+/* This file defines navbar classes */
+
+nav.nav
+{
+    // Don't show when printing
+    @media print {
+        display:none;
+    }
+
+    background-color:@color-light;
+    color:@color-dark;
+    padding:0px;
+    border-bottom:1px solid @color-lighter;
+
+    @media (min-width:900px) {
+        /* Responsive flexible layout */
+        height:40px;
+        position:fixed;
+        top:0px;
+        left:0px;
+        right:0px;
+
+        overflow:hidden;
+    }
+
+    width:100%;
+    z-index:1000;
+
+    ul {
+        margin:0px;
+        padding:0px;
+
+        li {
+            list-style: none;
+            border-right:1px solid #DDD;
+            margin:0px;
+            text-align:center;
+
+            @media (min-width: 900px) {
+                display:-webkit-flex;
+                float:left;
+                margin:0px;
+            }
+
+            a {
+                display:block;
+                font-weight:200;
+                transition: 0.2s ease all;
+                line-height:40px;
+                padding-left:10px;
+                padding-right:10px;
+
+                &:hover {
+                    transition: 0.2s ease all;
+                    background-color:@color-primary;
+                    color:#FFF;
+                }
+            }
+        }
+    }
+
+    // Search bar
+    .nav-search {
+        padding:0px;
+
+        input {
+            background-color: @color-light;
+            color:@color-darker;
+            padding:10px;
+            margin:0px;
+            border:none;
+            height:40px;
+            width:100%;
+
+            transition:0.4s all ease;
+            @media (min-width:900px) {
+                /* Fix to display the search box a little larger */
+                position:absolute;
+                width:100%;
+            }
+            /* Prevent style overwriting */
+            &:hover, &:focus {
+                margin:0px;
+                border:none;
+                outline:0;
+            }
+
+            &:focus {
+                background-color: @color-primary;
+                color: @color-white;
+            }
+        }
+    }
+}

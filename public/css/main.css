@@ -1,0 +1,821 @@
+/* main.css file for laravelwiki */
+
+/* Gentium serif fonts */
+@font-face {
+    font-family: GentiumPlus;
+    src: url('../fonts/serif/GentiumPlus-R.woff');
+    font-style:normal;
+    font-weight:normal;
+    text-rendering: optimizeLegibility;
+}
+@font-face {
+    font-family: GentiumPlus;
+    font-style: italic;
+    src: url('../fonts/serif/GentiumPlus-I.woff');
+    font-style:italic;
+    font-weight:normal;
+    text-rendering: optimizeLegibility;
+}
+
+/* Lato sans serif fonts */
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/sans/Lato-Bold.woff') format('woff');
+    font-style: normal;
+    font-weight: bold;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/sans/Lato-BoldItalic.woff') format('woff');
+    font-style: italic;
+    font-weight: bold;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/sans/LatoLatin-Regular.woff') format('woff');
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/sans/Lato-Light.woff') format('woff');
+    font-style: normal;
+    font-weight:300;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/sans/Lato-LightItalic.woff') format('woff');
+    font-style: italic;
+    font-weight: 300;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/sans/Lato-Thin.woff') format('woff');
+    font-style: normal;
+    font-weight:200;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/sans/Lato-ThinItalic.woff') format('woff');
+    font-style: italic;
+    font-weight: 200;
+    text-rendering: optimizeLegibility;
+}
+
+/* Bitstream vera monospace font */
+@font-face {
+    font-family:'Bitstream';
+    src: url('../fonts/mono/VeraMono.ttf') format('ttf');
+    font-style:normal;
+    font-weight:normal;
+}
+@font-face {
+    font-family:'Bitstream';
+    src: url('../fonts/mono/VeraMoIt.ttf') format('ttf');
+    font-style:italic;;
+    font-weight:normal;
+}
+@font-face {
+    font-family:'Bitstream';
+    src: url('../fonts/mono/VeraMoBd.ttf') format('ttf');
+    font-style:normal;
+    font-weight:bold;
+}
+@font-face {
+    font-family:'Bitstream';
+    src: url('../fonts/mono/VeraBI.ttf') format('ttf');
+    font-style:italic;;
+    font-weight:bold;
+}
+
+/******************************************************************************/
+
+*
+{
+    box-sizing:border-box;
+}
+
+body
+{
+    margin: 0px;
+    /* Navbar fix */
+    margin-top:70px;
+    padding: 0px;
+    font-size:16px;
+    font-family: Lato, "Helvetica Neue", "Liberation sans", Arial, sans-serif;
+    background-color:white;
+    /* Nobody wants a text selection cursor over empty rows! */
+    cursor:default;
+}
+
+/* Override default selection colors */
+::selection
+{
+    background-color:#333;
+    color:#fff;
+}
+
+/* Fix for the fix */
+a { cursor:pointer; }
+
+div.container
+{
+    margin:20px;
+    margin-left:15%;
+    margin-right:15%;
+    height:auto;
+    width:70%;
+    position:relative;
+}
+
+div.row
+{
+    margin-bottom:20px;
+}
+
+div.row:before, div.row:after, div.container:before, div.container:after
+{
+    display:table;
+    content: " ";
+}
+
+div.col-md-4
+{
+    position:relative;
+    min-height: 1px;
+    float:left;
+    width:33.33333333%;
+    margin:0px;
+    padding:0px;
+}
+
+div.col-md-8
+{
+    position:relative;
+    min-height: 1px;
+    float:left;
+    width:66.66666666%;
+    margin:0px;
+    padding:0px;
+}
+
+/* Basic typography */
+
+/* Headings */
+h1, h2, h3, h4, h5, h6
+{
+    font-weight:bold;
+    display:block;
+    padding-left:20px;
+    margin-bottom:10px;
+    font-weight:400;
+}
+
+/* Add an "emphasis" underlining to top level headings */
+h1, h2
+{
+    border-bottom:1px solid #ddd;
+}
+
+h1 { font-size: 40px; }
+h2 { font-size: 36px; }
+h3 { font-size: 30px; }
+h4 { font-size: 24px; }
+h5 { font-size: 20px; }
+h6 { font-size: 16px; }
+
+h1 > small, h2 > small, h3 > small, h4 > small, h5 > small, h6 > small
+{
+    color: #ddd;
+}
+
+/* Lists */
+ul, ol
+{
+    margin:0px;
+}
+
+li
+{
+    line-height:140%;
+}
+
+/* Tables */
+table
+{
+    padding:5px;
+    width:100%;
+}
+
+tr
+{
+    padding:0px;
+    margin:0px;
+}
+
+td, th
+{
+    margin:0px;
+    padding:4px;
+    border-bottom:1px solid #ddd;
+}
+
+/* Single elements */
+hr
+{
+    border:none;
+    border-bottom:1px solid #999;
+    width:90%;
+    margin-top:10px;
+    margin-bottom:20px;
+}
+
+/* Links */
+a
+{
+    color:inherit;
+    text-decoration: none;
+    border-bottom:1px solid #00A8E0;
+    transition: 0.2s ease all;
+}
+
+a:hover
+{
+    color:#00A8E0;
+    transition: 0.2s ease all;
+}
+
+a.anchor
+{
+    /* invisibilize anchors */
+    visibility:hidden;
+}
+
+/* Generic helper classes */
+.float-right{
+    float:right;
+}
+
+/* Navbar */
+nav.nav
+{
+    position:fixed;
+    top:0px;
+    left:0px;
+    right:0px;
+    height:40px;
+    overflow:hidden;
+    background-color:#333;
+    color:#DDD;
+    padding:0px;
+    /* Responsive flexible layout */
+    display:table;
+    table-layout:fixed;
+    width:100%;
+    z-index:1000;
+}
+
+nav.nav ul
+{
+    margin:0px;
+    padding:0px;
+    display:table-row;
+}
+
+nav.nav li
+{
+    display:table-cell;
+    list-style: none;
+    border-left:1px solid #DDD;
+    border-right:1px solid #DDD;
+    margin:0px;
+    text-align:center;
+}
+
+nav.nav li a, div.toc li a
+{
+    display:block;
+    transition: 0.2s ease all;
+    background-color:#333;
+    line-height:40px;
+    padding-left:5px;
+    padding-right:5px;
+}
+
+nav.nav li a:hover, div.toc li a:hover
+{
+    transition: 0.2s ease all;
+    background-color:#00A8E0;
+    color:#FFF;
+}
+
+footer
+{
+    background-color:#333;
+    color:#DDD;
+    padding:5px;
+}
+
+/* Typography in articles: Never do sans-serif! */
+article p, article ul, article ol, article blockquote
+{
+    font-size:22px;
+    font-family: GentiumPlus, "Georgia", "Times New Roman", serif;
+    font-weight:normal;
+    padding:10px;
+    text-align: justify;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    margin-top:0px;
+    margin-bottom:10px;
+}
+
+article h1, article h2, article h3, article h4, article h5, article h6
+{
+    color:#335;
+}
+
+article p::first-line
+{
+    padding-left:25px;
+}
+
+article blockquote
+{
+    border-left:6px solid #00A8E0;
+    margin-left:20px;
+    font-style: italic;
+    color:#666;
+}
+
+article a
+{
+    margin:-2px;
+    padding-left:2px;
+    padding-right:2px;
+    border-bottom:2px solid #00A8E0;
+    border-radius:2px;
+    transition:0.2s ease all;
+}
+
+article a:hover
+{
+    background-color:#00A8E0;
+    color:inherit;
+}
+
+article a.broken
+{
+    margin:-2px;
+    padding-left:2px;
+    padding-right:2px;
+    border-bottom:2px solid #DE5757;
+    border-radius:2px;
+    transition:0.2s ease all;
+}
+
+article a.broken:hover
+{
+    background-color:#DE5757;
+    color:inherit;
+}
+
+article p.ref-pages-list
+{
+    font-family:Lato;
+    font-weight:normal;
+    background-color:#ddd;
+    border-radius:4px;
+    color:#666;
+    font-size:16px;
+}
+
+article table
+{
+    margin:20px 20px;
+}
+
+article table td, article table th
+{
+    font-size:20px;
+}
+
+div.task-buttons
+{
+    position:absolute;
+    top:40px;
+    right:-100px;
+}
+
+h1.page-title
+{
+    /*border-bottom:1px solid #ddd;*/
+}
+
+/* Pretty important for wikis: Forms */
+form
+{
+    /* Form elements should only be wrapper for actions */
+    margin:0px;
+    padding:0px;
+    margin-top:20px;
+    width:100%;
+}
+
+div.form-row
+{
+    width:100%;
+    height:auto;
+    margin-bottom:10px;
+    padding-top:10px;
+    padding-bottom:20px;
+}
+
+input[type="text"], textarea
+{
+    transition:0.2s ease all;
+    width:100%;
+    border:1px solid #333;
+    padding:6px;
+    margin:6px;
+    display:block;
+    -webkit-box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0);
+    -moz-box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0);
+    box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0);
+}
+
+input[type="text"]:focus, textarea:focus
+{
+    transition:0.2s ease all;
+    border: 1px solid #00A8E0;
+    margin:6px;
+    -webkit-box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0.75);
+    -moz-box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0.75);
+    box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0.75);
+}
+
+input[type="submit"]
+{
+    width:90%;
+    border:1px solid #333;
+    color:#333;
+    background-color:white;
+    padding:6px;
+    margin:6px;
+    display:block;
+    transition:0.2s ease all;
+}
+
+input[type="submit"]:hover
+{
+    transition:0.2s ease all;
+    border-color:#00A8E0;
+    cursor:pointer;
+}
+
+label
+{
+    max-width:10%;
+}
+
+input[readonly], input[readonly="readonly"], input[readonly]:focus, input[readonly="readonly"]:focus
+{
+    color:#aaa;
+    border:1px solid #aaa;
+    cursor:not-allowed;
+}
+
+input.page-submit
+{
+    /* Especially in long pages it will be annoying scrolling all the way
+    up/down for submitting changes. This fixes this. */
+    position:fixed;
+    bottom:20px;
+    right:120px;
+    width:200px;
+    background-color:#00A8E0;
+    color:white;
+    border-color:#00A8E0;
+}
+
+/* Gettin' more specific: Buttons */
+
+a.button
+{
+    display:inline-block;
+    padding:10px;
+    border:1px solid #ddd;
+    color:#333;
+    /* Fix so that they don't overwhelm with their appearance */
+    font-size:smaller;
+}
+
+a.button:hover
+{
+    border-color:#00A8E0;
+    color:#00A8E0;
+}
+
+a.button.success:hover
+{
+    color:#2EC94D;
+    border:1px solid #2EC94D;
+}
+
+a.button.error:hover
+{
+    color:#DE5757;
+    border:1px solid #DE5757;
+}
+
+a.button.warning:hover
+{
+    color:#D6D629;
+    border:1px solid #D6D629;
+}
+
+a.button.muted, a.actionButton.muted:hover
+{
+    color:#aaa;
+    border:1px solid #aaa;
+}
+
+span.label-primary, span.label-warning, span.label-error, span.label-success, span.label-muted
+{
+    border-radius:4px;
+    padding:2px 8px;
+    margin:0px 8px;
+    font-size:16px;
+    font-family:'Lato', sans-serif;
+    vertical-align: text-top;
+}
+
+span.label-primary
+{
+    background-color:#00A8E0;
+    color:white;
+}
+
+span.label-warning
+{
+    background-color:#D6D629;
+    color:white;
+}
+
+span.label-error
+{
+    background-color:#DE5757;
+    color:white;
+}
+
+span.label-success
+{
+    background-color:#2EC94D;
+    color:white;
+}
+
+span.label-muted
+{
+    background-color:#aaa;
+    color:white;
+}
+
+/* Positional helper classes */
+.fixed-bottom-right
+{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+}
+
+/* TOC - styles */
+div.toc
+{
+    position:fixed;
+    top:40px;
+    left:0px;
+    width:15%;
+    min-width:300px;
+    background-color:rgba(25, 25, 25, 0.8);
+    color:white;
+    margin:0px;
+    padding:0px;
+    overflow-y:auto;
+    height:100%;
+    transform:rotateY(90deg);
+    transition:0.8s all ease;
+    transform-origin:left;
+    perspective: 10px;
+}
+
+div.toc.open {
+    transform:rotateY(0deg);
+    transition:0.8s all ease;
+}
+
+div.toc ul
+{
+    margin:0px;
+    padding:0px;
+}
+
+div.toc ul li
+{
+    list-style:none;
+}
+
+div.toc li a
+{
+    border-bottom:1px solid #ddd;
+    display:block;
+    height:20px;
+    line-height:20px;
+    overflow:hidden;
+    background-color:inherit;
+    padding-left:5px;
+    transition:0.1s all linear;
+}
+
+div.toc li.class-h1 { padding-left:0px; }
+div.toc li.class-h2 { padding-left:5px; }
+div.toc li.class-h3 { padding-left:10px; }
+div.toc li.class-h4 { padding-left:15px; }
+div.toc li.class-h5 { padding-left:20px; }
+div.toc li.class-h6 { padding-left:25px; }
+
+div.toc li a:hover
+{
+    transition:0.1s all linear;
+}
+
+/* A little bit space between the TOC and the top navigation as well as some
+below so that also the last headings can be seen */
+div.toc ul li:first-child
+{
+    margin-top:20px;
+}
+
+div.toc ul li:last-child
+{
+    margin-bottom:40px;
+}
+
+/* Page index styles (for instance for the tab-nav etc.) */
+div.tab-nav
+{
+    display:table;
+    table-layout:fixed;
+    width:100%;
+}
+
+div.tab-nav ul
+{
+    display:table-row;
+    margin:0px;
+    padding:0px;
+}
+
+div.tab-nav ul li
+{
+    display:table-cell;
+    list-style:none;
+    text-align:center;
+    margin:0px;
+    padding:0px;
+    background-color:#005C94; /* Primary color darkened 10% */
+    transition:0.2s all ease;
+}
+
+div.tab-nav ul li a
+{
+    color:white;
+    display:block;
+    text-decoration: none;
+    border:none;
+    border-bottom:1px solid #00A8E0;
+    line-height:300%;
+}
+
+div.tab-nav ul li:hover, div.tab-nav ul li[aria-selected="true"] /* jQueryUI Tabs-specific active-modes */
+{
+    background-color:#00A8E0;
+    transition:0.2s all ease;
+}
+
+/* Prevent this ugly gray line around links */
+div.tab-nav ul li a:focus
+{
+    outline:0;
+}
+
+/* Last but not least: Some fixes */
+
+/* Adapt CodeMirror to bootstrap basic styling */
+.CodeMirror {
+    /* Auto resize on more than ten lines but auto show at least 10 lines height */
+    height: auto;
+    min-height:300px;
+    margin:6px;
+}
+
+.CodeMirror pre {
+    font-family: 'Bitstream', Menlo, monospace;
+}
+
+.CodeMirror-scroll {
+    min-height:300px;
+    cursor:text;
+}
+
+.CodeMirror .cm-gfm-wiki
+{
+    color:#00A8E0;
+    background-color:#eee;
+}
+
+/* Make the cursor more fancy */
+.CodeMirror .CodeMirror-cursor
+{
+    border-left:2px solid #00A8E0;
+}
+
+/* The following is the X-Menu animation. */
+.lines-button {
+    padding: 5px 5px;
+    transition: .3s;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 2px;
+    background-color:transparent;
+    border:none;
+    margin-top:-2px;
+}
+.lines-button:hover {
+    opacity: 1;
+}
+.lines-button:active {
+    transition: 0;
+}
+.lines-button:focus {
+    outline:0;
+}
+
+.lines {
+    display: inline-block;
+    width: 30px;
+    height: 3px;
+    background: #ecf0f1;
+    transition: 0.3s;
+    position: relative;
+}
+.lines:before, .lines:after {
+    display: inline-block;
+    width: 30px;
+    height: 3px;
+    background:#ecf0f1;
+    /*background: #ecf0f1;*/
+    transition: 0.3s;
+    position: absolute;
+    left: 0;
+    content: '';
+    -webkit-transform-origin: 10px center;
+    transform-origin: 10px center;
+}
+.lines:before {
+    top: 10px;
+}
+.lines:after {
+    top: -10px;
+}
+
+.lines-button.x.open .lines {
+    background: transparent;
+}
+.lines-button.x.open .lines:before, .lines-button.x.open .lines:after {
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+    top: 0;
+    width: 30px;
+}
+.lines-button.x.open .lines:before {
+    -webkit-transform: rotate3d(0, 0, 1, 45deg);
+    transform: rotate3d(0, 0, 1, 45deg);
+}
+.lines-button.x.open .lines:after {
+    -webkit-transform: rotate3d(0, 0, 1, -45deg);
+    transform: rotate3d(0, 0, 1, -45deg);
+}

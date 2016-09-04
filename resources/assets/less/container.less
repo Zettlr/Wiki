@@ -1,0 +1,83 @@
+/* Styles for container divs */
+
+/*
+ * CONTENTS
+ *
+ * 1. div.container
+ * 2. div.row
+ * 3. footer
+ *
+ */
+
+div
+{
+    &.container {
+        margin:0px;
+        // Little spacing to the nav
+        margin-bottom:30px;
+        height:100%;
+        padding:10px;
+        position:relative;
+
+        @media (min-width: 800px) {
+            margin-left:5%;
+            margin-right:5%;
+        }
+
+        // Only small margins when printing
+        @media print {
+            margin-left:2%;
+            margin-right:2%;
+        }
+
+        @media (min-width: 900px) {
+            margin-left:5%;
+            margin-right:5%;
+        }
+
+        @media (min-width: 1300px) {
+            margin-left:10%;
+            margin-right:10%;
+        }
+
+        @media (min-width: 1500px) {
+            margin-left:15%;
+            margin-right:15%;
+        }
+    }
+
+    &.row {
+        margin-bottom:20px;
+    }
+
+    &.row:before,
+    &.row:after,
+    &.container:before,
+    &.container:after {
+        display:table;
+        content: " ";
+    }
+
+}
+
+/* Footer styles */
+footer
+{
+    background-color: @color-white;
+    color: @color-darker;
+    border-top:1px solid @color-lighter;
+    padding:5px;
+    clear:both;
+    text-align: center;
+
+    // Always show on all devices
+    position:fixed;
+    bottom:0px;
+    left:0px;
+    right:0px;
+
+    // ... except when printing
+    @media print {
+        display:none;
+    }
+}

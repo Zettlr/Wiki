@@ -1,0 +1,142 @@
+/* This file defines styles used for the dynamic generated table of contents */
+
+div.toc-parent {
+    perspective: 1000px;
+    position:fixed;
+    top:40px;
+    left:0px;
+    width:100%;
+    bottom:30px;
+
+    &.back {
+        // The transition here mainly means "wait 1s and then set z-index to -1"
+        // which enables us to first "hide" the "real" TOC, before applying the
+        // style which then enables clicking buttons etc.
+        transition:1s all ease;
+        z-index:-1;
+    }
+
+    @media (min-width:600px) {
+        width:15%;
+        min-width:300px;
+    }
+}
+
+/* TOC mixins */
+.extendfull, .extendleft
+{
+    padding-left: 3000px;
+    margin-left: -3000px;
+}
+
+.extendfull, .extendright
+{
+    padding-right: 3000px;
+    margin-right: -3000px;
+}
+
+div.tooltip {
+    position:absolute;
+    background-color:rgba(25, 25, 25, 0.8);
+    padding:4px;
+    border-radius:4px;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    color:white;
+    font-weight:200;
+
+    &:before{
+        content:'';
+        display:block;
+        width:0;
+        height:0;
+        position:absolute;
+
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+        border-right:10px solid rgba(25, 25, 25, 0.8);
+        left:-10px;
+
+        top:6px;
+    }
+}
+
+div.toc
+{
+    background-color:rgba(25, 25, 25, 0.8);
+    color:white;
+    margin:0px;
+    padding:0px;
+    overflow-y:auto;
+    overflow-x:visible;
+    height:100%;
+    transform:rotateY(120deg);
+    transition:0.8s all ease;
+    transform-origin:0%;
+
+    @media (min-width:600px) {
+        width:15%;
+        min-width:300px;
+    }
+
+    &.open {
+        transform:rotateY(0deg);
+        transition:0.8s all ease;
+    }
+
+    ul {
+        margin:0px;
+        padding:0px;
+
+        li {
+            list-style:none;
+
+            a {
+                border-bottom:1px solid #ddd;
+                display:block;
+                height:20px;
+                line-height:20px;
+                overflow:hidden;
+                background-color:inherit;
+                padding-left:5px;
+                transition:0.1s all linear;
+                font-weight:200;
+
+                &:hover {
+                    transition:0.1s all linear;
+                    color:#fff;
+                    background-color:@color-primary;
+                }
+            }
+
+            &.class-h1 {
+                padding-left:0px;
+            }
+            &.class-h2 {
+                padding-left:5px;
+            }
+            &.class-h3 {
+                padding-left:10px;
+            }
+            &.class-h4 {
+                padding-left:15px;
+            }
+            &.class-h5 {
+                padding-left:20px;
+            }
+            &.class-h6 {
+                padding-left:25px;
+            }
+        }
+
+        /* A little bit space between the TOC and the top navigation as well as some
+        below so that also the last headings can be seen */
+        &:first-child {
+            margin-top:20px;
+        }
+
+        &:last-child {
+            margin-bottom: 40px;
+        }
+    }
+}
