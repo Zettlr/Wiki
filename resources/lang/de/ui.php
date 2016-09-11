@@ -53,10 +53,46 @@ return [
         'index'                 => 'Seitenindex',
         'create'                => 'Neue Seite erstellen',
         'backend'               => 'Administrationsbereich',
-        'search'                => 'Finde in der Wiki &hellip;',
+        'search'                => 'Finden &hellip;',
         'top'                   => 'Nach oben',
     ],
     'backend' => [
+        'user' => [
+            'welcome'           => 'Willkommen zur&uuml;ck, :user!',
+            'login'             => 'Einloggen',
+            'logout'            => 'Ausloggen',
+            'register'          => 'Registrierung',
+            'no_account'        => 'Noch kein Nutzerkonto? Lege dir eines an:',
+            'information'       => 'Nutzerinformationen',
+            'name'              => 'Benutzername',
+            'email'             => 'Email-Adresse',
+            'name_or_mail'      => 'Benutzername oder Email-Adresse',
+            'password'          => 'Passwort',
+            'password_confirm'  => 'Passwort best&auml;tigen',
+            'token'             => 'Um dich zu registrieren, musst du einen Schl&uuml;ssel eingeben. Diesen solltest du bereits erhalten haben.',
+            'token_input'       => 'Schl&uuml;ssel eingeben',
+            'register_submit'   => 'Registrierung abschlie&szlig;en',
+            'account'           => 'Benutzerkonto',
+            'accountinfo'       => 'Auf dieser Seite kannst du deine Benutzerdaten wie Email-Adresse oder Name &auml;ndern. Au&szlig;erdem kannst du hier dein API-Token erneuern.',
+            'api_token'         => 'API-Token',
+            'api_token_info'    => 'Dein Momentanes API-Token ist :token. Erstelle es neu, falls du auf Probleme st&ouml;&szlig;t. Beispielsweise, wenn du nicht mehr in der Lage bist, via ContentTools Seiten zu editieren.',
+            'api_token_regen'   => 'API-Token neu erstellen',
+            'pw_verify'         => 'Bitte best&auml;tige dein aktuelles Passwort.',
+        ],
+        'token'                 => 'Registrierungsschl&uuml;ssel',
+        'tokeninfo'             => 'Diese Seite listet alle vorhandenen
+                                    Schl&uuml;ssel auf, mit denen sich Benutzer
+                                    im eingeschr&auml;nkten Modus registrieren
+                                    k&ouml;nnen. M&ouml;chtest du jemandem die
+                                    Registrierung erlauben, so lege einen
+                                    Schl&uuml;ssel mit mindestens einer Benutzung
+                                    an, und gib ihn dem Nutzer. Er verf&auml;llt
+                                    dann automatisch nach der Anmeldung.',
+        'token_remaining'       => 'Verbleibende Nutzungen',
+        'create_token'          => 'Neue Sch&uuml;ssel anlegen',
+        'token_amount'          => 'Anzahl neuer Schl&uuml;ssel',
+        'token_uses'            => 'Verwendungen der neuen Schl&uuml;ssel',
+        'tokenplaceholder'      => 'Menge',
         'backtomain'            => 'Zur&uuml;ck zur Startseite',
         'dashboard'             => 'Dashboard',
         'settings'              => 'Einstellungen',
@@ -65,8 +101,8 @@ return [
             'pages'             => 'Seiten in dieser Wiki',
             'dbsize'            => 'Momentane Datenbankgr&ouml;&szlig;e',
             'dbbackup'          => 'Datenbank sichern',
-            'viewcache'         => 'Gr&ouml;&szlig;e des View-Caches',
-            'viewflush'         => 'Views-Cache leeren',
+            'cache'             => 'Gr&ouml;&szlig;e des Caches',
+            'cacheflush'        => 'Cache leeren',
             'exporthtmldesc'    => 'Alle Seiten im HTML-Format als ZIP exportieren',
             'exporthtmllink'    => 'Exportieren &hellip;',
         ],
@@ -74,6 +110,8 @@ return [
         'lognone'               => 'Keine Logdateien gefunden!',
         'logs'                  => 'Logdateien',
         'availablelogs'         => 'Verf&uuml;gbare Logdateien',
+        'logfull'               => 'Vollst&auml;ndiges Log ansehen',
+        'logtail'               => 'Nur das Ende des Logs anzeigen',
     ],
     'settings' => [
         'settings'              => 'Einstellungen',
@@ -93,6 +131,21 @@ return [
         'lang' => [
             'en'                => 'Englisch (USA)',
             'de'                => 'Deutsch (Deutschland)',
+        ],
+        'auth' => [
+            'title'             => 'Benutzer und Sicherheit',
+            'active'            => 'Authentifizierungssystem aktivieren',
+            'activeinfo'        => 'Wenn du das Authentifizierungssystem aktivierst, musst du dich je nach Einstellungen einloggen, um diese Seite zu sehen. Sei vorsichtig mit dieser Einstellung, damit du dich nicht selber ausschlie&szlig;t!',
+            'isactive'          => 'Aktiv',
+            'isnotactive'       => 'Ausgeschaltet',
+            'register'          => 'Registrierung',
+            'registerinfo'      => 'Hiermit kannst du steuern, ob sich neue Nutzer frei registrieren k&ouml;nnen, oder ob sie eingeladen werden m&uuml;ssen.',
+            'registeractive'    => 'Jeder kann sich registrieren',
+            'registerinactive'  => 'Registrierungen sind nur mit einem Schl&uuml;ssel m&ouml;glich.',
+            'guest_edit'        => 'G&auml;ste-Bearbeitungen',
+            'guest_editinfo'    => 'Mit dieser Option kannst du es G&auml;sten und nicht eingeloggten Benutzern erlauben oder verbieten, Seiten zu bearbeiten.',
+            'guest_editinactive'=> 'Nur registrierte und eingeloggte Benutzer d&uuml;rfen die Seiten bearbeiten.',
+            'guest_editactive'  => 'Jeder darf die Seiten bearbeiten.',
         ],
         'database'              => 'Datenbankeinstellungen',
         'dbtype'                => 'Datenbank-Typ',
@@ -155,5 +208,11 @@ return [
             'alert'             => 'Gef&auml;hrlich',
             'emergency'         => 'Notfall (Sehr ernst)',
         ],
-    ]
+    ],
+    'errors' => [
+            '401' => [
+                'title'         => '401: Nicht authorisiert',
+                'message'       => 'Du hast nicht die benötigten Rechte, um die angeforderte Aktion auszuf&uuml;hren. Bitte logge dich ein.',
+            ]
+    ],
 ];

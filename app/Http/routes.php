@@ -40,9 +40,33 @@ Route::group(['prefix' => 'admin'], function() {
     Route::post('/settings', 'Backend@saveSettings');
     Route::get ('/advancedSettings', 'Backend@advancedSettings');
     Route::post('/advancedSettings', 'Backend@saveSettings'); // As only changed settings are saved we can reuse the function
-    Route::get ('/flushViews', 'Backend@flushViews');
+    Route::get ('/flushCache', 'Backend@flushCache');
     Route::get ('/backupDatabase', 'Backend@backupDatabase');
-    Route::get ('/logs', 'Backend@logs');
+    Route::get ('/logs/{file?}/{flags?}', 'Backend@logs');
+    Route::get ('/token', 'Backend@getToken');
+    Route::post('/token', 'Backend@postToken');
+    Route::get ('/account', 'Backend@getAccount');
+    Route::post('/account', 'Backend@postAccount');
+    Route::get('/regenerate-api-token', 'Backend@regenerateToken');
+});
+
+
+/******************************************************************************
+ * Login and stuff                                                            *
+ ******************************************************************************/
+
+Route::get ('login', 'UserController@getLogin');
+Route::post('login', 'UserController@postLogin');
+Route::get ('register', 'UserController@getRegistration');
+Route::post('register', 'UserController@postRegistration');
+Route::get ('logout', 'UserController@logout');
+
+/******************************************************************************
+ * API specific routes                                                        *
+ ******************************************************************************/
+
+Route::group(['prefix' => 'api', 'middleware' => 'auth:api'], function() {
+    Route::post('edit', 'PageController@postEditAPI');
 });
 
 /******************************************************************************

@@ -11,9 +11,13 @@ use App\Http\Requests;
 use Illuminate\Support\Collection;
 
 use App\Page;
+use App;
+
+use Auth;
 
 use Validator;
-use DB;
+
+use Illuminate\Support\Facades\Cache;
 
 use GrahamCampbell\Markdown\Facades\Markdown;
 use League\HTMLToMarkdown\HtmlConverter;
@@ -41,8 +45,7 @@ class PageController extends Controller
         $pattern = "/\[\[(.*?)\]\]/i";
         foreach($pages as $page)
         {
-            $referencingPages = DB::select('SELECT page1_id FROM page_page WHERE page2_id = ' . $page->id . ';');
-            if(count($referencingPages) == 0) {
+            if(count($page->getReferencingPages()) == 0) {
                 $unreferencedPages->push($page);
             }
 
@@ -87,73 +90,13 @@ class PageController extends Controller
         $page = Page::where('slug', $slug)->get()->first();
         // Count the results
         if(count($page) != 1) {
-            // Redirect to creation page
-            return redirect('/create/'.$slug);
+            return App::abort(404);
         }
 
-        // Before converting to html we need to assign a little bit nicer quotes to the content
-        // Currently, only german quotes will be set, but in the future, depending on the language
-        // we could employ all quotes necessary
-        // Deactivated (Reason: Some nasty errors in display)
-        // $page->content = preg_replace("/[\W+][\"](.+?)[\"][\W+]/is", " &bdquo;$1&ldquo; ", $page->content);
+        // Now parse
+        $page->highlight($term)->parsed();
 
-        $page->content = Markdown::convertToHtml($page->content);
-
-        if($term !== "") {
-            // We have a term to highlight, so do it!
-            // We have to do this BEFORE we replace such stuff like wiki links
-            // as otherwise we can corrupt our links
-
-            $term = explode(" ", $term);
-
-            for($i = 0; $i < sizeof($term); $i++) {
-                //$page->content = preg_replace("/[^\[\>](" . $term[$i] . ")/i", ' <span class="highlight">$1</span>', $page->content);
-                $page->content = preg_replace("/(" . $term[$i] . ")/i", ' <span class="highlight">$1</span>', $page->content);
-            }
-        }
-
-        // BEGIN DISPLAY WIKILINKS: Preg-replace the Wikilinks
-        $pattern = "/\[\[(.*?)\]\]/i";
-        $page->content = preg_replace_callback($pattern, function($matches) {
-            // Replace the Link text with the title of each found wikilink
-
-            if(strpos($matches[1], '|') > 0)
-            {
-                // The second part is what we need
-                $text = explode('|', $matches[1]);
-                $matches[1] = $text[0];
-                if(strlen($text[1]) == 0) {
-                    $text = $matches[1];
-                }
-                else {
-                    $text = $text[1];
-                }
-            }
-            else {
-                // If no linktext was given, just display the match.
-                $text = $matches[1];
-            }
-
-            // Now that we for sure have only the slug in $matches[1], get the page
-            $page = Page::where('slug', $matches[1])->get()->first();
-
-            if($page !== null) {
-                // We got a match -> replace the link
-
-                if($text === $matches[1]) {
-                    $text = $page->title;
-                }
-
-                return "<a href=\"" . url('/') . "/$matches[1]\">" . $text . "</a>";
-            }
-            else {
-                // No page with this name exists -> link to create page
-                return "<a class=\"broken\" href=\"" . url('/') . "/create/$matches[1]\" title=\"Create this page\">$text</a>";
-            }
-        }, $page->content);
-        // END DISPLAY WIKILINKS
-
-        // Prepare possible variables and replace them
+        // Replace variables
         // Available variables: %wordcount%, %pagecount%
         $page->content = preg_replace_callback("(%wordcount%)", function($matches) {
             // Compute the wordcount and replace
@@ -165,38 +108,8 @@ class PageController extends Controller
             return number_format($this->pagecount());
         }, $page->content);
 
-        // Labels
-        $page->content = preg_replace_callback("(%label\|(.+?)%)", function($matches) {
-            return '<span class="label-primary">' . $matches[1] . '</span>';
-        }, $page->content);
-        $page->content = preg_replace_callback("(%success\|(.+?)%)", function($matches) {
-            return '<span class="label-success">' . $matches[1] . '</span>';
-        }, $page->content);
-        $page->content = preg_replace_callback("(%warning\|(.+?)%)", function($matches) {
-            return '<span class="label-warning">' . $matches[1] . '</span>';
-        }, $page->content);
-        $page->content = preg_replace_callback("(%error\|(.+?)%)", function($matches) {
-            return '<span class="label-error">' . $matches[1] . '</span>';
-        }, $page->content);
-        $page->content = preg_replace_callback("(%muted\|(.+?)%)", function($matches) {
-            return '<span class="label-muted">' . $matches[1] . '</span>';
-        }, $page->content);
-
-        // Now get the referencing pages for this
-        // In our database, always page2_id is the page
-        // that is being referenced by page1_id, so we
-        // need to get page1_id where page2_id is this id
-        $referencingPages = DB::select('SELECT page1_id FROM page_page WHERE page2_id = ' . $page->id . ';');
-
-        // Now we have an array with all IDs from the referencing pages, but we
-        // need title and slug from these pages
-        $tmp = [];
-        for($i = 0; $i < count($referencingPages); $i++)
-        {
-            $tmp[] = $referencingPages[$i]->page1_id;
-        }
-        // whereIn takes an array and selects all (in this case) IDs from the array
-        $referencingPages = Page::whereIn('id', $tmp)->get();
+        // Get the referencing pages
+        $referencingPages = Page::whereIn('id', $page->getReferencingPages())->get();
 
         return view('page.show', compact('page', 'referencingPages'));
     }
@@ -208,6 +121,10 @@ class PageController extends Controller
     */
     public function getCreate($slug = NULL)
     {
+        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+            App::abort(401);
+        }
+
         if(isset($slug)) {
             return view('page.create', compact('slug'));
         }
@@ -222,6 +139,10 @@ class PageController extends Controller
     */
     public function postCreate(Request $request)
     {
+        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+            App::abort(401);
+        }
+
         // Create a validator
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:255',
@@ -264,19 +185,28 @@ class PageController extends Controller
     */
     public function getEdit($slug)
     {
-        $page = Page::where('slug', $slug)->get()->first();
+        if(!env('AUTH_GUEST_EDIT') && !Auth::check()) {
+            App::abort(401);
+        }
+
+        $page = Page::where('slug', $slug)->get()->first()->raw();
 
         return view('page.edit', compact('page'));
     }
 
     /**
     * Inserts edited contents of pages into the database
+    *
     * @param  Request $request The request object
     * @param  Mixed   $flags    Potential flags (like "json") or null
     * @return Redirect           Either to the page or on errors to edit page
     */
     public function postEdit(Request $request, $flags = null)
     {
+        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+            App::abort(401);
+        }
+
         // Create a validator
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:255',
@@ -284,37 +214,20 @@ class PageController extends Controller
         ]);
 
         if ($validator->fails()) {
-            if($flags === "json") {
-                return response()->json([$validator, 400]); // Bad request
-            }
-            else {
-                return redirect('/edit/'.$request->slug)
-                ->withErrors($validator)
-                ->withInput();
-            }
+            return redirect('/edit/'.$request->slug)
+            ->withErrors($validator)
+            ->withInput();
         }
 
         $page = Page::where('slug', $request->slug)->get()->first();
 
         if($page === null) {
-            if($flags === "json") {
-                return response()->json(['Page was not found', 404]);
-            }
-            else {
-                return redirect('/');
-            }
+            return redirect('/');
         }
 
         // Everything good? Edit!
         $page->title = $request->title;
         $page->content = $request->content;
-        // If the page has been updated via ContentTools we have to convert to
-        // markdown (first to remove the editing classes and second to Simply
-        // save space on the server).
-        if($flags === "json") {
-            $converter = new HtmlConverter();
-            $page->content = $converter->convert($page->content);
-        }
         $page->save();
 
         // Now update all links this page may link to
@@ -328,12 +241,48 @@ class PageController extends Controller
         $indexingRequest = Request::create('/searchEngine/rebuild/' . $page->id, 'GET');
         $response = \Route::dispatch($indexingRequest);
 
-        if($flags === "json") {
-            return response()->json([$page->content, 200]);
+        return redirect('/'.$request->slug);
+    }
+
+    public function postEditAPI(Request $request)
+    {
+        // Create a validator
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:255',
+            'content' => 'required|min:10'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator, 400]); // Bad request
         }
-        else {
-            return redirect('/'.$request->slug);
+
+        $page = Page::where('slug', $request->slug)->get()->first();
+
+        if($page === null) {
+            return redirect('/');
         }
+
+        // Everything good? Edit!
+        $page->title = $request->title;
+        $page->content = $request->content;
+        // If the page has been updated via ContentTools we have to convert to
+        // markdown (first to remove the editing classes and second to Simply
+        // save space on the server).
+        $converter = new HtmlConverter();
+        $page->content = $converter->convert($page->content);
+        $page->save();
+
+        // Now update all links this page may link to
+        $pageCollection = new Collection();
+        $pageCollection->push($page);
+        $this->updateLinks($pageCollection);
+
+        // One last thing to do: Update the search index. Therefore we will "call"
+        // the rebuilder from within this function via a route we will process
+        // internally (i.e. as if we would've visit this route)
+        $indexingRequest = Request::create('/searchEngine/rebuild/' . $page->id, 'GET');
+        $response = \Route::dispatch($indexingRequest);
+        return response()->json([$page->content, 200]);
     }
 
     /**
@@ -342,6 +291,10 @@ class PageController extends Controller
     */
     public function showTrash()
     {
+        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+            App::abort(401);
+        }
+
         $pages = Page::onlyTrashed()->get();
 
         // The app-view always requires $page->title variable to be set
@@ -358,6 +311,10 @@ class PageController extends Controller
     */
     public function emptyTrash()
     {
+        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+            App::abort(401);
+        }
+
         $pages = Page::onlyTrashed()->get();
 
         foreach($pages as $page) {
@@ -374,6 +331,10 @@ class PageController extends Controller
     */
     public function trash($id)
     {
+        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+            App::abort(401);
+        }
+
         try {
             $page = Page::findOrFail($id);
         }
@@ -398,6 +359,10 @@ class PageController extends Controller
     */
     public function restoreFromTrash($id)
     {
+        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+            App::abort(401);
+        }
+
         $page = Page::withTrashed()->where('id', $id)->get()->first();
 
         if($page === null) {
@@ -418,17 +383,21 @@ class PageController extends Controller
         // Calculates a wordcount for the whole wiki
         // Could do it nicer, but seriously, nobody
         // needs such exact amounts
-        $count = 0;
 
-        $pages = Page::all();
+        return Cache::remember('wordcount', 60, function() {
+            $count = 0;
 
-        foreach($pages as $page)
-        {
-            $cntwords = explode(' ', $page->content);
-            $count += count($cntwords);
-        }
+            $pages = Page::all();
 
-        return $count;
+            foreach($pages as $page)
+            {
+                $cntwords = explode(' ', $page->content);
+                $count += count($cntwords);
+            }
+
+            return $count;
+        });
+
     }
 
     /**
@@ -437,8 +406,9 @@ class PageController extends Controller
     */
     public function pagecount()
     {
-        // Pretty easy: Return number of pages in this wiki
-        return Page::all()->count();
+        return Cache::remember('pagecount', 60, function() {
+            return Page::all()->count();
+        });
     }
 
     /**
@@ -448,6 +418,10 @@ class PageController extends Controller
     */
     public function updateLinks($pages = null)
     {
+        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+            App::abort(401);
+        }
+
         // In $pages only should be one page (when called from within postEdit,
         // which happens on every edit)
         // But basically it can also hold a distinctive array of pages (to not

@@ -2,15 +2,17 @@
 
 @section('content')
     <article id="wikitext">
-            <h1 class="clearfix page-title"><span data-name="page-title">{{ $page->title }}</span> <small>{{ (strlen($page->slug) > 60) ? substr($page->slug, 0, 60) . "&hellip;" : $page->slug }}</small></h1>
-        <div class="task-buttons">
-            <a class="button success" href="{{ url('/edit/'.$page->slug) }}">{{ trans('ui.page.edit') }}</a>
-            <a class="button success" id="contenttoolsEdit">{{ trans('ui.page.contenttools') }}</a>
-            <a class="button error hidden" id="contenttoolsCancel">{{ trans('ui.page.cancel') }}</a>
-            @if($page->slug !== "Main_Page")
-                <a class="button error" href="{{ url('/remove/' . $page->id) }}">{{ trans('ui.page.trash') }}</a>
-            @endif
-        </div>
+        <h1 class="clearfix page-title"><span data-name="page-title">{{ $page->title }}</span> <small>{{ (strlen($page->slug) > 60) ? substr($page->slug, 0, 60) . "&hellip;" : $page->slug }}</small></h1>
+        @if(env('AUTH_GUEST_EDIT') || Auth::check())
+            <div class="task-buttons">
+                <a class="button success" href="{{ url('/edit/'.$page->slug) }}">{{ trans('ui.page.edit') }}</a>
+                <a class="button success" id="contenttoolsEdit">{{ trans('ui.page.contenttools') }}</a>
+                <a class="button error hidden" id="contenttoolsCancel">{{ trans('ui.page.cancel') }}</a>
+                @if($page->slug !== "Main_Page")
+                    <a class="button error" href="{{ url('/remove/' . $page->id) }}">{{ trans('ui.page.trash') }}</a>
+                @endif
+            </div>
+        @endif
         @if(count($referencingPages) > 0)
             <p class="ref-pages-list">
                 {{ trans('ui.page.referencing') }}:

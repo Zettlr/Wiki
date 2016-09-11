@@ -50,7 +50,7 @@ class AjaxController extends Controller
         $fcontents);
 
         if($success) {
-            return response()->json(['Upload successful'], 200);    
+            return response()->json(['Upload successful'], 200);
         }
         else {
             return response()->json(['Failed to move file to directory'], 500);
@@ -65,65 +65,20 @@ class AjaxController extends Controller
             try {
                 $page = Page::findOrFail($id);
 
-                $page->content = Markdown::convertToHtml($page->content);
-
-                return response()->json([$page->content, 200]);
+                return response()->json([$page->html()->content, 200]);
             } catch (ModelNotFoundException $e) {
                 return response()->json(["Couldn't find page!", 404]);
             }
         }
         else { // "Nice" HTML with variables parsed
             try {
-                $page = Page::findOrFail($id);
-
-                $page->content = Markdown::convertToHtml($page->content);
+                $page = Page::findOrFail($id)->parsed();
 
             } catch (ModelNotFoundException $e) {
                 return response()->json(["Couldn't find page!", 404]);
             }
 
-            // TODO: Export this whole bunch of code
 
-            // BEGIN DISPLAY WIKILINKS: Preg-replace the Wikilinks
-            $pattern = "/\[\[(.*?)\]\]/i";
-            $page->content = preg_replace_callback($pattern, function($matches) {
-                // Replace the Link text with the title of each found wikilink
-
-                if(strpos($matches[1], '|') > 0)
-                {
-                    // The second part is what we need
-                    $text = explode('|', $matches[1]);
-                    $matches[1] = $text[0];
-                    if(strlen($text[1]) == 0) {
-                        $text = $matches[1];
-                    }
-                    else {
-                        $text = $text[1];
-                    }
-                }
-                else {
-                    // If no linktext was given, just display the match.
-                    $text = $matches[1];
-                }
-
-                // Now that we for sure have only the slug in $matches[1], get the page
-                $page = Page::where('slug', $matches[1])->get()->first();
-
-                if($page !== null) {
-                    // We got a match -> replace the link
-
-                    if($text === $matches[1]) {
-                        $text = $page->title;
-                    }
-
-                    return "<a href=\"" . url('/') . "/$matches[1]\">" . $text . "</a>";
-                }
-                else {
-                    // No page with this name exists -> link to create page
-                    return "<a class=\"broken\" href=\"" . url('/') . "/create/$matches[1]\" title=\"Create this page\">$text</a>";
-                }
-            }, $page->content);
-            // END DISPLAY WIKILINKS
 
             // Prepare possible variables and replace them
             // Available variables: %wordcount%, %pagecount%
@@ -135,23 +90,6 @@ class AjaxController extends Controller
             $page->content = preg_replace_callback("(%pagecount%)", function($matches) {
                 // Compute the pagecount and replace
                 return number_format($this->pagecount());
-            }, $page->content);
-
-            // Labels
-            $page->content = preg_replace_callback("(%label\|(.+?)%)", function($matches) {
-                return '<span class="label-primary">' . $matches[1] . '</span>';
-            }, $page->content);
-            $page->content = preg_replace_callback("(%success\|(.+?)%)", function($matches) {
-                return '<span class="label-success">' . $matches[1] . '</span>';
-            }, $page->content);
-            $page->content = preg_replace_callback("(%warning\|(.+?)%)", function($matches) {
-                return '<span class="label-warning">' . $matches[1] . '</span>';
-            }, $page->content);
-            $page->content = preg_replace_callback("(%error\|(.+?)%)", function($matches) {
-                return '<span class="label-error">' . $matches[1] . '</span>';
-            }, $page->content);
-            $page->content = preg_replace_callback("(%muted\|(.+?)%)", function($matches) {
-                return '<span class="label-muted">' . $matches[1] . '</span>';
             }, $page->content);
 
             return response()->json([$page->content, 200]);

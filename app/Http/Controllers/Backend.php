@@ -9,17 +9,29 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests;
 
 use App\PageIndex;
+use App\User;
+
+use Auth;
 
 use Validator;
 
+use Illuminate\Support\Facades\Hash;
+
 class Backend extends Controller
 {
+    public function __construct()
+    {
+        if(env('AUTH_ACTIVE', true)) {
+            $this->middleware('auth');
+        }
+    }
+
     /**
     * Displays an initial "dashboard"
     * @return View The dashboard view
     */
     public function index()
-    {
+    { // dd(session()->all());
         $page = new \stdClass();
         $stats = new \stdClass();
         $page->title = "Dashboard";
@@ -162,16 +174,17 @@ class Backend extends Controller
         ->header('Content-Disposition', 'attachment; filename="' . env('DB_DATABASE', '') . '"');
     }
 
-    public function flushViews()
+    public function flushCache()
     {
-        // Run the artisan command
+        // Run the artisan commands
         Artisan::call('view:clear');
+        Artisan::call('cache:clear');
 
         // And return
         return redirect('/admin');
     }
 
-    public function logs($flags = "tail")
+    public function logs($file = "current", $flags = "tail")
     {
         $page = new \stdClass();
         $page->title = 'Logs';
@@ -183,34 +196,165 @@ class Backend extends Controller
         $latest = "";
 
         // Get the logfile with the newest information
-        foreach($logfiles as $file) {
+        foreach($logfiles as &$f) {
             // Exclude any non-log files
-            if(substr($file, -3) !== "log") {
+            if(substr($f, -3) !== "log") {
                 continue;
             }
 
-            if(File::lastModified($file) > $lastmod) {
-                $lastmod = File::lastModified($file);
-                $latest = $file;
+            if(File::lastModified($f) > $lastmod) {
+                $lastmod = File::lastModified($f);
+                // Replace the name for better readability in the view
+                $f = File::name($f) . '.' . File::extension($f);
+                $latest = $f;
             }
         }
 
-        // Now extract the tail of the latest logfile (if $flags != "all")
-        if($flags == "tail") {
-            $logcontent = File::get($latest);
-            $tail = preg_split("/((\r?\n)|(\r\n?))/", $logcontent);
-            // Get only the last 40 lines
-            $firstline = sizeof($tail) - 40;
-            $tail = array_slice($tail, $firstline);
+        $theFile = storage_path() . '/logs/' . (($file == 'current') ? $latest : $file);
 
-            for($i = 0; $i < sizeof($tail); $i++) {
-                $lines[$i] = new \stdClass();
-                $lines[$i]->number = $firstline + $i;
-                $lines[$i]->contents = $tail[$i];
+        $logcontent = File::get($theFile);
+        $logcontent = preg_split("/((\r?\n)|(\r\n?))/", $logcontent);
+
+        $logBegin = ($flags == 'tail') ? sizeof($logcontent) - 40 : 0;
+
+        $firstline = $logBegin;
+        $logcontent = array_slice($logcontent, $logBegin);
+        $lines = [];
+
+        for($i = 0; $i < sizeof($logcontent); $i++) {
+            $lines[$i] = new \stdClass();
+            $lines[$i]->number = $logBegin + $i;
+            $lines[$i]->contents = $logcontent[$i];
+        }
+
+        $theFile = File::name($theFile) . '.' . File::extension($theFile);
+
+        return view('admin.logs', compact('logfiles', 'lines', 'page', 'theFile'));
+    }
+
+    public function getToken()
+    {
+        $page = new \stdClass();
+        $page->title = trans('ui.backend.settings.token_title');
+
+        $tokenfile = storage_path() . '/app/token.txt';
+
+        if(!File::exists($tokenfile)) {
+            File::put($tokenfile, '');
+        }
+
+        $token = [];
+        foreach(preg_split("/((\r?\n)|(\r\n?))/", File::get($tokenfile)) as $line) {
+            if(strpos($line, '=') <= 0) {
+                continue;
+            }
+
+            $line = explode("=", $line);
+
+            $token[] = ['token' => $line[0], 'uses' => $line[1]];
+        }
+
+        return view('admin.token', compact('page', 'token'));
+    }
+
+    public function postToken(Request $request)
+    {
+        $tokenfile = storage_path() . '/app/token.txt';
+        $token = [];
+
+        if(!File::exists($tokenfile)) {
+            File::put($tokenfile, '');
+        }
+
+        // First lets check whether we should create new token
+        if($request->has('reg_token') && intval($request->reg_token) > 0) {
+            $uses = ($request->reg_token_uses > 0) ? $request->reg_token_uses : 1;
+
+            for($i = 0; $i < $request->reg_token; $i++) {
+                $token[] = ['token' => md5(random_bytes(32)), 'uses' => $uses];
             }
         }
 
-        return view('admin.logs', compact('logfiles', 'lines', 'page'));
+        // Now our other token with updated uses
+        if($request->has('token')) {
+            for($i = 0; $i < sizeof($request->token); $i++) { //foreach($request->token as $key => $t) {
+                $token[] = ['token' => $request->token[$i], 'uses' => $request->uses[$i]];
+            }
+        }
+
+        // Unset all token without uses
+        foreach($token as $key => $t) {
+            if($t['uses'] <= 0) {
+                unset($token[$key]);
+            }
+        }
+
+        // Now just save the token.
+        foreach($token as $key => $t) {
+            $token[$key] = $t['token'] . '=' . $t['uses'];
+        }
+
+        File::put($tokenfile, implode("\n", $token));
+
+        return redirect('/admin/token');
+    }
+
+    public function getAccount()
+    {
+        $page = new \stdClass();
+        $page->title = 'Account';
+
+        if(!Auth::check()) {
+            return redirect('/admin'); // Return non-logged-in users as they won't see anything here.
+        }
+
+        return view ('admin.account', compact('page'));
+    }
+
+    public function postAccount(Request $request)
+    {
+        if(!Auth::check()) {
+            return redirect('/admin'); // Cannot update info for no user
+        }
+
+        // Check password
+        if(!Auth::attempt(['email' => Auth::user()->email, 'password' => $request->old_password])) {
+            return redirect('/admin/account')->withInput()->withErrors(['old_password' => 'Your old password was wrong']);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255|unique:users,name,'. Auth::user()->id,
+            'email' => 'required|email|max:255|unique:users,email,' . Auth::user()->id,
+            'old_password' => 'required|min:6',
+            'password' => 'min:6|confirmed',
+        ]);
+
+        if($validator->fails()) {
+            return redirect('/admin/account')->withInput()->withErrors($validator);
+        }
+
+        $user = User::find(Auth::user()->id);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        $user->save();
+
+        return redirect('/admin/account');
+    }
+
+    public function regenerateToken()
+    {
+        if(!Auth::check()) {
+            return redirect('/admin'); // Cannot regenerate a token for no user
+        }
+
+        $user = User::find(Auth::user()->id);
+
+        $user->api_token = Hash::make(random_bytes(32)); // For now only a simple token
+        $user->save();
+
+        return redirect('/admin/account');
     }
 
     /************************************
@@ -253,10 +397,12 @@ class Backend extends Controller
     */
     public function getCacheSize()
     {
-        $files = File::allFiles(storage_path() . '/framework/views');
-
         $size = 0;
-        foreach($files as $file) {
+        foreach(File::allFiles(storage_path() . '/framework/views') as $file) {
+            $size += File::size($file);
+        }
+
+        foreach(File::allFiles(storage_path() . '/framework/cache') as $file) {
             $size += File::size($file);
         }
 

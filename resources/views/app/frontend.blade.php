@@ -41,8 +41,13 @@
         mediaLibraryGetter: "{{ url('/ajax/getMedia') }}",
         mediaLibrarySetter: "{{ url('/ajax/uploadMedia') }}",
         contentToolsGetter: "{{ url('/ajax/getPageContent') }}",
-        contentToolsSetter: "{{ url('/edit/json') }}",
-        csrfToken: "{!! csrf_token() !!}"
+        contentToolsSetter: "{{ url('/api/edit') }}",
+        csrfToken: "{!! csrf_token() !!}",
+        @if(Auth::check())
+        api_token: "{{ Auth::user()->api_token }}",
+        @else
+        api_token: "unauthenticated",
+        @endif
     };
 
     // Also we will need some translation strings
@@ -195,7 +200,15 @@
             <li><a href="{{ url('/trash') }}">{{ trans('ui.frontend.trash') }}</a></li>
             <li><a href="{{ url('/index') }}">{{ trans('ui.frontend.index') }}</a></li>
             <li><a href="{{ url('/create') }}">{{ trans('ui.frontend.create') }}</a></li>
-            <li><a href="{{ url('/admin') }}">{{ trans('ui.frontend.backend') }}</a></li>
+            @if(env('AUTH_ACTIVE', true))
+                @if(Auth::check())
+                    <li><a href="{{ url('/admin') }}">{{ trans('ui.frontend.backend') }}</a></li>
+                @else
+                    <li><a href="{{ url('/login') }}">{{ trans('ui.backend.user.login') }}</a></li>
+                @endif
+            @else
+                <li><a href="{{ url('/admin') }}">{{ trans('ui.frontend.backend') }}</a></li>
+            @endif
             <li class="nav-search"><input type="text" role="search" class="nav-search" id="search-input" placeholder="{{ trans('ui.frontend.search') }}" /></li>
         </ul>
     </nav>

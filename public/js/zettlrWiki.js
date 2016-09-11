@@ -19,11 +19,13 @@ window.addEventListener('load', function() {
         // Save the current DOM contents to server
         newContents = {
             _token: zettlrURL.csrfToken,
+            api_token: zettlrURL.api_token,
             title: $('[data-name="page-title"]').text(),
             content: regions['page-content'],
             slug: $('[data-name="page-content"]').attr("data-slug")
         };
 
+console.log('Using API token ' + zettlrURL.api_token);
         $.ajax({
             method: 'POST',
             url: zettlrURL.contentToolsSetter,

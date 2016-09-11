@@ -72,7 +72,7 @@ table.log {
     padding:0px;
     border-collapse:collapse;
     font-family:@font-family-monospace;
-    font-weight:light;
+    font-weight:200;
     font-size:@font-size-basic * 0.7;
 
     tr {
@@ -84,13 +84,14 @@ table.log {
         padding:4px;
 
         &.line {
-            background-color:@color-dark;
+            background-color:black;
             color:@color-white;
+            vertical-align:top;
         }
 
         &.content {
-            background-color:@color-darker;
-            color:@color-black;
+            background-color:@color-dark;
+            color:@color-white;
         }
     }
 }

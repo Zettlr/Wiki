@@ -79,11 +79,6 @@
                 extraKeys: { "Tab": false }
             });
         }
-
-        /*
-        * TAB NAVIGATION
-        */
-
         // Enable tab navigation
         if($('#tabs').length) {
             $('#tabs').tabs();
@@ -170,6 +165,10 @@
             <li><a href="{{ url('/admin/settings') }}">{{ trans('ui.backend.settings') }}</a></li>
             <li><a href="{{ url('/admin/advancedSettings') }}">{{ trans('ui.settings.advanced') }}</a></li>
             <li><a href="{{ url('/admin/logs') }}">{{ trans('ui.backend.logs') }}</a></li>
+            <li><a href="{{ url('/admin/token') }}">{{ trans('ui.backend.token') }}</a></li>
+            @if(Auth::check())
+                <li><a href="{{ url('/admin/account') }}">{{ trans('ui.backend.user.account') }}</a></li>
+            @endif
         </ul>
     </nav>
 

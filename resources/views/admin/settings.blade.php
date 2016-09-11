@@ -53,6 +53,37 @@
         </div>
 
         <div class="input-group">
+            <span class="group-title">{{ trans('ui.settings.auth.title') }}</span>
+
+            <label for="AUTH_ACTIVE">
+                {{ trans('ui.settings.auth.active') }}
+                <span data-display="tooltip" data-content="{{ trans('ui.settings.auth.activeinfo') }}"></span>
+            </label>
+            <select name="AUTH_ACTIVE">
+                <option value="true" {{ env('AUTH_ACTIVE') ? 'selected' : '' }}>{{ trans('ui.settings.auth.isactive') }}</option>
+                <option value="false" {{ (!env('AUTH_ACTIVE')) ? 'selected' : '' }}>{{ trans('ui.settings.auth.isnotactive') }}</option>
+            </select>
+
+            <label for="AUTH_REGISTER">
+                {{ trans('ui.settings.auth.register') }}
+                <span data-display="tooltip" data-content="{{ trans('ui.settings.auth.registerinfo') }}"></span>
+            </label>
+            <select name="AUTH_REGISTER">
+                <option value="true" {{ env('AUTH_REGISTER') ? 'selected' : '' }}>{{ trans('ui.settings.auth.registeractive') }}</option>
+                <option value="false" {{ (!env('AUTH_REGISTER')) ? 'selected' : '' }}>{{ trans('ui.settings.auth.registerinactive') }}</option>
+            </select>
+
+            <label for="AUTH_GUEST_EDIT">
+                {{ trans('ui.settings.auth.guest_edit') }}
+                <span data-display="tooltip" data-content="{{ trans('ui.settings.auth.guest_editinfo') }}"></span>
+            </label>
+            <select name="AUTH_GUEST_EDIT">
+                <option value="true" {{ env('AUTH_GUEST_EDIT') ? 'selected' : '' }}>{{ trans('ui.settings.auth.guest_editactive') }}</option>
+                <option value="false" {{ (!env('AUTH_GUEST_EDIT')) ? 'selected' : '' }}>{{ trans('ui.settings.auth.guest_editinactive') }}</option>
+            </select>
+        </div>
+
+        <div class="input-group">
             <span class="group-title">{{ trans('ui.settings.database')}}</span>
 
             <label for="DB_CONNECTION">
