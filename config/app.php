@@ -162,6 +162,7 @@ return [
          * Additional providers
          */
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+        //Comodojo\Zip\Zip::class,
 
     ],
 
@@ -210,6 +211,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
+        'ZIP' => Comodojo\Zip\Zip::class,
 
     ],
 

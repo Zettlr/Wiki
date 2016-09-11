@@ -67,6 +67,8 @@ return [
             'dbbackup'          => 'Backup database',
             'viewcache'         => 'Size of cached views',
             'viewflush'         => 'Flush views cache',
+            'exporthtmldesc'    => 'Alle Seiten im HTML-Format als ZIP exportieren',
+            'exporthtmllink'    => 'Exportieren &hellip;',
         ],
         'loginfo'               => 'The log files present to you deep info about your application. If you encounter strange errors, taking a look at these files may help. Also, if you want to file in a bug report, this data can support your complaint.',
         'lognone'               => 'There are no logfiles present!',

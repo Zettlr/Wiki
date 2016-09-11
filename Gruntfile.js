@@ -10,8 +10,8 @@ module.exports = function(grunt) {
             },
             dist: {
                 src: ['public/js/zettlr.editor.js',
-                      'public/js/zettlr.helper.js',
-                      'public/js/zettlr.media-library.js'],
+                'public/js/zettlr.helper.js',
+                'public/js/zettlr.media-library.js'],
                 dest: 'public/js/<%= pkg.name %>.js'
             }
         },
@@ -57,6 +57,22 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
 
     // Register default task
+    grunt.registerTask('build-contenttools', function() {
+        var cb = this.async();
+        var child = grunt.util.spawn({
+            grunt: true,
+            args: ['build'], // Run the build task
+            opts: {
+                cwd: 'node_modules/ContentTools' // Working dir: ContentTools
+            }
+        }, function(error, result, code) {
+            cb(); // This just means that the command will be issued async, letting us pipe the stdout in real time
+        });
+
+        child.stdout.pipe(process.stdout);
+        child.stderr.pipe(process.stderr);
+    });
+
     grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
-    grunt.registerTask('build', ['jshint', 'concat', 'uglify'])
+    grunt.registerTask('build', ['default', 'build-contenttools']);
 };

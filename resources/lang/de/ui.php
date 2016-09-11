@@ -67,6 +67,8 @@ return [
             'dbbackup'          => 'Datenbank sichern',
             'viewcache'         => 'Gr&ouml;&szlig;e des View-Caches',
             'viewflush'         => 'Views-Cache leeren',
+            'exporthtmldesc'    => 'Alle Seiten im HTML-Format als ZIP exportieren',
+            'exporthtmllink'    => 'Exportieren &hellip;',
         ],
         'loginfo'               => 'Die Logdateien bieten erweiterte Informationen &uuml;ber deine Anwendung. Falls du auf merkw&uuml;rdige Fehler st&ouml;&szlig;t, schaue in diesen Dateien nach, ob sie mehr verraten. Zudem kannst du Informationen aus diesen Dateien f&uuml;r Fehleranzeigen an die Entwickler verwenden.',
         'lognone'               => 'Keine Logdateien gefunden!',

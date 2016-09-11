@@ -226,7 +226,7 @@ class PageController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:255',
             'content' => 'required|min:10',
-            'slug' => 'unique:pages|max:255'
+            'slug' => 'required|unique:pages|max:255'
         ]);
 
         if ($validator->fails()) {

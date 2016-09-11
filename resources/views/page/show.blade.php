@@ -1,7 +1,6 @@
 @extends('app.frontend')
 
 @section('content')
-    <!--<a class="zen-view">zen</a>-->
     <article id="wikitext">
             <h1 class="clearfix page-title"><span data-name="page-title">{{ $page->title }}</span> <small>{{ (strlen($page->slug) > 60) ? substr($page->slug, 0, 60) . "&hellip;" : $page->slug }}</small></h1>
         <div class="task-buttons">

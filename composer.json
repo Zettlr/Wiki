@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "graham-campbell/markdown": "^6.1",
         "oyejorge/less.php": "v1.7.0.10",
-        "league/html-to-markdown": "^4.2"
+        "league/html-to-markdown": "^4.2",
+        "comodojo/zip": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

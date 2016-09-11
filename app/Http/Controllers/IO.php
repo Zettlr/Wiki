@@ -6,83 +6,58 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
-use App\Media;
 use App\Page;
+
+use Comodojo\Zip\Zip;
+use stdClass;
 
 use GrahamCampbell\Markdown\Facades\Markdown;
 
-use Storage;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\View;
 
-class AjaxController extends Controller
+class IO extends Controller
 {
-    public function getMedia()
+    // This controller basically is responsible for migrating from and to
+    // ZettlrWiki.
+    public function export($format = "html", $pages = "all")
     {
-        // This function just returns all media stored in the database
-        $media = Media::all();
+        // Possible values for format (right now):
+        // "html"
 
-        if(count($media) <= 0) {
-            return response()->json(['message' => 'There are no media files stored in the database.'], 404);
+        $filesystem = new Filesystem();
+
+        // Prepare the output folder
+        $basedir = storage_path() . '/app/public/export';
+
+        if(!$filesystem->exists($basedir)) {
+            $filesystem->makeDirectory($basedir);
+        }
+
+        // Clean up previous exportings
+        $filesystem->deleteDirectory($basedir, true);
+
+        if($pages === "all") {
+            $p = Page::all();
         }
         else {
-            // JSON is so damned easy <3
-            return $media;
+            $pages = explode(",", $pages);
+            $p = Page::find($pages);
         }
-    }
 
-    // TODO
-    public function uploadMedia()
-    {
-        // This function lets us upload images
-        if(!$request->hasFile('import_tmp'))
-        return response()->json(['The file hasn\'t been uploaded!'], 400);
-
-        if(!$request->file('import_tmp')->isValid())
-        return response()->json(['The file has been corrupted on upload.'], 500);
-
-        // First initialize our local storage
-        $store = Storage::disk('local');
-
-        $fcontents = File::get($request->file('import_tmp')->getRealPath());
-
-        // We're using time() to have a unique identifier for retaining the notes' upload order
-        $success = $store->put(
-        $dirname . '/tmp_'.time().'.'.$request->file('import_tmp')->getClientOriginalExtension(),
-        $fcontents);
-
-        if($success) {
-            return response()->json(['Upload successful'], 200);    
+        // First: Assemble TOC
+        $toc = [];
+        $i = 0;
+        foreach($p as $page) {
+            $toc[$i] = new stdClass();
+            $toc[$i]->slug = $page->slug;
+            $toc[$i]->title = $page->title;
+            $i++;
         }
-        else {
-            return response()->json(['Failed to move file to directory'], 500);
-        }
-    }
 
-    public function getPageContent($id, $raw = "no")
-    {
-        if($raw !== "no") { // Raw HTML without variable parsing
-            // ATTENTION! Until ContentTools works, it will try to convert from MD
-            // to HTML!
-            try {
-                $page = Page::findOrFail($id);
-
-                $page->content = Markdown::convertToHtml($page->content);
-
-                return response()->json([$page->content, 200]);
-            } catch (ModelNotFoundException $e) {
-                return response()->json(["Couldn't find page!", 404]);
-            }
-        }
-        else { // "Nice" HTML with variables parsed
-            try {
-                $page = Page::findOrFail($id);
-
-                $page->content = Markdown::convertToHtml($page->content);
-
-            } catch (ModelNotFoundException $e) {
-                return response()->json(["Couldn't find page!", 404]);
-            }
-
-            // TODO: Export this whole bunch of code
+        // We need all pages in HTML format. So reformat them!
+        foreach($p as $page) {
+            $page->content = Markdown::convertToHtml($page->content);
 
             // BEGIN DISPLAY WIKILINKS: Preg-replace the Wikilinks
             $pattern = "/\[\[(.*?)\]\]/i";
@@ -116,11 +91,12 @@ class AjaxController extends Controller
                         $text = $page->title;
                     }
 
-                    return "<a href=\"" . url('/') . "/$matches[1]\">" . $text . "</a>";
+                    // When linking here, we need to only get up one level and append HTML.
+                    return "<a href=\"./$matches[1].html\">" . $text . "</a>";
                 }
                 else {
-                    // No page with this name exists -> link to create page
-                    return "<a class=\"broken\" href=\"" . url('/') . "/create/$matches[1]\" title=\"Create this page\">$text</a>";
+                    // No page with this name exists -> only wrap in a red link.
+                    return "<a class=\"broken\">$text</a>";
                 }
             }, $page->content);
             // END DISPLAY WIKILINKS
@@ -154,12 +130,43 @@ class AjaxController extends Controller
                 return '<span class="label-muted">' . $matches[1] . '</span>';
             }, $page->content);
 
-            return response()->json([$page->content, 200]);
+            // Last but not least: wrap them in the exportable HTML
+            $view = View::make('app.export-html', compact('page', 'toc'));
+            $filesystem->put($basedir . '/' . $page->slug . '.html', $view->render());
+        } // END FOREACH
+
+        // Now copy stuff like CSS and javascript.
+        if(!$filesystem->exists($basedir . '/css')) {
+            $filesystem->makeDirectory($basedir . '/css');
         }
+        if(!$filesystem->exists($basedir . '/js')) {
+            $filesystem->makeDirectory($basedir . '/js');
+        }
+
+        $filesystem->copy(public_path() . '/css/app.min.css', $basedir . '/app.min.css');
+        $filesystem->copy(public_path() . '/js/jquery.min.js', $basedir . '/jquery.min.js');
+        $filesystem->copy(public_path() . '/js/jquery-ui.min.js', $basedir . '/jquery-ui.min.js');
+
+        // Now zip the base dir and output it.
+        $zip = Zip::create(storage_path() . '/app/public/export.zip');
+        foreach($filesystem->allFiles($basedir) as $path) {
+            if($filesystem->isDirectory($path)) {
+                continue;
+            }
+            $zip->add($path->getPathname(), true);
+        }
+
+        $zip->close();
+
+        // Finally: Provide file for download:
+        $database = $filesystem->get(storage_path() . '/app/public/export.zip');
+
+        return response($database, 200)
+        ->header('Content-Type', 'application/octet-stream')
+        ->header('Content-Disposition', 'attachment; filename="export.zip"');
     }
 
-    // TODO: Those two functions are declared two times, which should not be
-
+    // ToDo: Remove and use in different class
     /**
     * Simple word counting function by counting an array of space-exploded contents
     * @return Int The calculated word count
