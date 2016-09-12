@@ -225,6 +225,12 @@
         <a class="float-right brand" target="_blank" href="http://www.zettlr.com">ZettlrWiki | &copy; 2016 <strong>&zeta;</strong> <small>Zettlr</small>.</a>
     </footer>
     <!-- Scroll to top-message -->
-    <a id="scroll-button" title="{{ trans('ui.frontend.top') }}"><span class="fa fa-arrow-up fa-lg"></span></a>
+    <a id="scroll-button" title="{{ trans('ui.frontend.top') }}" style="display: none"><span class="fa fa-arrow-up fa-lg"></span></a>
+
+    @if(Auth::check())
+        <div id="user-info">
+            <a href="{{ url('/admin/account') }}">{{ trans('ui.backend.user.welcome', ['user' => Auth::user()->name]) }}</a>
+        </div>
+    @endif
 </body>
 </html>

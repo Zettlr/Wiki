@@ -24,8 +24,7 @@ window.addEventListener('load', function() {
             content: regions['page-content'],
             slug: $('[data-name="page-content"]').attr("data-slug")
         };
-
-console.log('Using API token ' + zettlrURL.api_token);
+        
         $.ajax({
             method: 'POST',
             url: zettlrURL.contentToolsSetter,
