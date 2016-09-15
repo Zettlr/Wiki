@@ -8,6 +8,13 @@ form
     margin-top:20px;
     width:100%;
 
+    // Spans should have a good vertical align according to the inputs
+    span {
+        // Matches inputs
+        line-height:30px;
+        margin:6px 0px;
+    }
+
     input, select, textarea, option {
         transition:0.2s ease all;
         height:30px;
@@ -17,6 +24,8 @@ form
         background-color:white;
         padding:6px;
         display:block;
+        margin:6px 0px;
+        width:100%;
 
         &:focus, &:hover {
             border: 1px solid @color-primary;
@@ -24,22 +33,24 @@ form
             -moz-box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0.75);
             box-shadow: outset 0px 0px 2px 0px rgba(0,168,224,0.75);
         }
+
+        &.inline {
+            display:inline-block;
+            width:auto;
+        }
     }
 
     // Special effects for submit buttons
     input[type="submit"], input[type="button"] {
-
-        margin:6px;
-
         &:hover {
             cursor:pointer;
+            background-color:lighten(@color-primary, 40%);
         }
     }
 
-    label {
-        display:block;
-        margin:6px 0px 6px -6px;
-        color: @color-primary;
+    // Remove the height value from checkboxes
+    input[type="checkbox"] {
+        height:auto;
     }
 
     input[readonly],
@@ -54,7 +65,7 @@ form
     // DIV settings
     div.input-group {
         border:1px solid @color-darker;
-        padding:10px;
+        padding:2%;
         margin-top:30px;
         padding-top:20px;
         position:relative;
@@ -68,6 +79,20 @@ form
             top:-10px;
             left:20px;
             padding:0px 5px;
+        }
+
+        // Labels should be placed a little bit more to the left
+        label {
+            display:block;
+            margin:6px 0px 6px -6px;
+            color: @color-primary;
+            line-height:30px;
+
+            &.inline {
+                color: inherit;
+                display:inline-block;
+                margin:0px 6px;
+            }
         }
     }
 

@@ -60,6 +60,7 @@ return [
         'user' => [
             'welcome'           => 'Welcome back, :user!',
             'login'             => 'Login',
+            'remember'          => 'Remember me',
             'logout'            => 'Logout',
             'register'          => 'Registration',
             'no_account'        => 'No account? Create one now:',
@@ -80,6 +81,15 @@ return [
             'api_token_info'    => 'Your current API token is :token. Regenerate it in case you experience problems such as not being able to edit pages via ContentTools.',
             'api_token_regen'   => 'Regenerate API token',
             'pw_verify'         => 'Please verify the changes with your password.',
+        ],
+        'updates' => [
+            'update'            => 'Updates',
+            'info'              => 'If there are new updates for your Wiki, you can download them here. Important: Please remember to always backup your database and configuration-file before every update!',
+            'major'             => 'There is a new major version available, published :published. This update upgrades your Wiki from version :current to :new. As it is a major version, you should expect features to work differently. Please consult the changelog for further information.',
+            'minor'             => 'There is a new minor version available, published :published. This update upgrades your wiki from version :current to :new. It contains new features and improvements.',
+            'patch'             => 'There is a new patch available, published :published. This patch upgrades your wiki from version :current to :new. This patch contains critical security fixes and other important fixes.',
+            'none'              => 'Your wiki is already up to date. The version you have is :current.',
+            'commence'          => 'Commence update.',
         ],
         'token'                 => 'Token',
         'tokeninfo'             => 'This site lists all existing tokens for registration of users in limited mode. If you want someone to be able to register, create a token with at least one use and give it to him/her. It will be invalidated automatically upon registration.',

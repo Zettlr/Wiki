@@ -121,7 +121,7 @@ class PageController extends Controller
     */
     public function getCreate($slug = NULL)
     {
-        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+        if(!env('AUTH_GUEST_EDIT') && !Auth::check()) {
             App::abort(401);
         }
 
@@ -139,7 +139,7 @@ class PageController extends Controller
     */
     public function postCreate(Request $request)
     {
-        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+        if(!env('AUTH_GUEST_EDIT') && !Auth::check()) {
             App::abort(401);
         }
 
@@ -203,7 +203,7 @@ class PageController extends Controller
     */
     public function postEdit(Request $request, $flags = null)
     {
-        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+        if(!env('AUTH_GUEST_EDIT') && !Auth::check()) {
             App::abort(401);
         }
 
@@ -291,7 +291,7 @@ class PageController extends Controller
     */
     public function showTrash()
     {
-        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+        if(!env('AUTH_GUEST_EDIT') && !Auth::check()) {
             App::abort(401);
         }
 
@@ -311,7 +311,7 @@ class PageController extends Controller
     */
     public function emptyTrash()
     {
-        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+        if(!env('AUTH_GUEST_EDIT') && !Auth::check()) {
             App::abort(401);
         }
 
@@ -331,7 +331,7 @@ class PageController extends Controller
     */
     public function trash($id)
     {
-        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+        if(!env('AUTH_GUEST_EDIT') && !Auth::check()) {
             App::abort(401);
         }
 
@@ -359,7 +359,7 @@ class PageController extends Controller
     */
     public function restoreFromTrash($id)
     {
-        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+        if(!env('AUTH_GUEST_EDIT') && !Auth::check()) {
             App::abort(401);
         }
 
@@ -418,7 +418,7 @@ class PageController extends Controller
     */
     public function updateLinks($pages = null)
     {
-        if(!env('AUTH_GUEST_EDIT') || !Auth::check()) {
+        if(!env('AUTH_GUEST_EDIT') && !Auth::check()) {
             App::abort(401);
         }
 

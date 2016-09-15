@@ -48,6 +48,10 @@ Route::group(['prefix' => 'admin'], function() {
     Route::get ('/account', 'Backend@getAccount');
     Route::post('/account', 'Backend@postAccount');
     Route::get('/regenerate-api-token', 'Backend@regenerateToken');
+
+    // updates
+    Route::get ('/updates', 'UpdateController@index');
+    Route::get ('/updates/upgrade', 'UpdateController@doUpdate');
 });
 
 

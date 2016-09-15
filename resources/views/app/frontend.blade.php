@@ -118,10 +118,6 @@
         // Create TOC
         assembleTOC();
 
-        /*
-        * TAB NAVIGATION
-        */
-
         // Enable tab navigation
         if($('#tabs').length) {
             $('#tabs').tabs();
@@ -227,10 +223,13 @@
     <!-- Scroll to top-message -->
     <a id="scroll-button" title="{{ trans('ui.frontend.top') }}" style="display: none"><span class="fa fa-arrow-up fa-lg"></span></a>
 
-    @if(Auth::check())
-        <div id="user-info">
-            <a href="{{ url('/admin/account') }}">{{ trans('ui.backend.user.welcome', ['user' => Auth::user()->name]) }}</a>
-        </div>
-    @endif
+    <div id="user-info">
+        @if(Auth::check())
+            <a href="{{ url('/admin/account') }}">{{ trans('ui.backend.user.welcome', ['user' => Auth::user()->name]) }}</a><br />
+            <a href="{{ url('/logout') }}">{{ trans('ui.backend.user.logout') }}</a>
+        @else
+            <a href="{{ url('/login') }}">{{ trans('ui.backend.user.login') }}</a>
+        @endif
+    </div>
 </body>
 </html>

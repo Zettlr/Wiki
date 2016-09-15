@@ -178,7 +178,11 @@ class Page extends Model
             }
             else {
                 // No page with this name exists -> link to create page
-                return "<a class=\"broken\" href=\"" . url('/') . "/create/$matches[1]\" title=\"trans('ui.page.create')\">$text</a>";
+                // UPDATE: Do not link to create page, as the show()-function will
+                // automatically redirect there. In this case we can override a
+                // problem with the cached pages not updating their links in about a day
+                // meaning that newly created pages won't be updated in their links.
+                return "<a class=\"broken\" href=\"" . url('/') . "/$matches[1]\" title=\"" . trans('ui.page.create') . "\">$text</a>";
             }
         }, $this->content);
         // END DISPLAY WIKILINKS

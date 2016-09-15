@@ -19,6 +19,11 @@ class UserController extends Controller
 {
     public function getLogin()
     {
+        if(Auth::check()) {
+            // Why the heck would you want to login again?
+            return redirect('/');
+        }
+
         $page = new \stdClass();
         $page->title = 'Login';
 
@@ -29,13 +34,16 @@ class UserController extends Controller
     {
         $success = false;
 
+        // Convert "on" / "off" to true/false
+        $request->remember = ($request->remember === "on") ? true : false;
+
         // First determine if the user used his name or his email.
         if(!filter_var($request->name, FILTER_VALIDATE_EMAIL) === false) {
             // We have an email address
-            $success = Auth::attempt(['email' => $request->name, 'password' => $request->password]);
+            $success = Auth::attempt(['email' => $request->name, 'password' => $request->password], $request->remember);
         } else {
             // We have a user name
-            $success = Auth::attempt(['name' => $request->name, 'password' => $request->password]);
+            $success = Auth::attempt(['name' => $request->name, 'password' => $request->password], $request->remember);
         }
 
         if($success) {

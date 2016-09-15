@@ -60,6 +60,7 @@ return [
         'user' => [
             'welcome'           => 'Willkommen zur&uuml;ck, :user!',
             'login'             => 'Einloggen',
+            'remember'          => 'Eingeloggt bleiben',
             'logout'            => 'Ausloggen',
             'register'          => 'Registrierung',
             'no_account'        => 'Noch kein Nutzerkonto? Lege dir eines an:',
@@ -78,6 +79,15 @@ return [
             'api_token_info'    => 'Dein Momentanes API-Token ist :token. Erstelle es neu, falls du auf Probleme st&ouml;&szlig;t. Beispielsweise, wenn du nicht mehr in der Lage bist, via ContentTools Seiten zu editieren.',
             'api_token_regen'   => 'API-Token neu erstellen',
             'pw_verify'         => 'Bitte best&auml;tige dein aktuelles Passwort.',
+        ],
+        'updates' => [
+            'update'            => 'Aktualisierungen',
+            'info'              => 'Wenn es Aktualisierungen f&uuml;r deine Wiki gibt, kannst du sie hier herunterladen und anwenden. Wichtig: Bitte lege vor jedem Update eine Sicherungskopie deiner Datenbank und deiner Konfigurationsdatei an!',
+            'major'             => 'Es liegt eine neue Hauptversion vom :published vor. Dieses Update aktualisiert deine Wiki von Version :current auf Version :new. Da es sich hier um ein gro&szlig;es Update handelt, kann es sein, dass Dinge anders funktionieren. Bitte schaue daf&uuml;r ins Changelog!',
+            'minor'             => 'Es liegt eine neue Version vom :published vor. Dieses Update aktualisiert deine Wiki von Version :current auf Version :new. Es enth&auml;lt neue Features und Verbesserungen.',
+            'patch'             => 'Es liegt ein neuer Patch vom :published vor. Dieser Patch aktualisiert deine Wiki von Version :current auf Version :new. Er enth&auml;lt kritische Sicherheitsupdates oder wichtige Fehlerverbesserungen.',
+            'none'              => 'Dein Wiki ist auf dem neuesten Stand. Die aktuelle Version ist :current.',
+            'commence'          => 'Beginne den Update-Prozess.',
         ],
         'token'                 => 'Registrierungsschl&uuml;ssel',
         'tokeninfo'             => 'Diese Seite listet alle vorhandenen

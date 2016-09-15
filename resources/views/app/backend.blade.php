@@ -169,6 +169,7 @@
             @if(Auth::check())
                 <li><a href="{{ url('/admin/account') }}">{{ trans('ui.backend.user.account') }}</a></li>
             @endif
+            <li><a href="{{ url('/admin/updates') }}">{{ trans('ui.backend.updates.update') }}</a></li>
         </ul>
     </nav>
 

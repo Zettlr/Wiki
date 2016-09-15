@@ -1,3 +1,12 @@
+# v.0.1.2
+
+* Fixed an error that in "closed editing mode" (Guests are not able to edit),
+  actually _only_ guests were able to edit.
+* Fixed the automatically generated table of contents to provide a better
+  overview over the different levels of headings.
+* Fixed a little translation error.
+* Fixed form and input styles.
+
 # v0.1.1
 
 * Changed serif font from Gentium to Alegreya

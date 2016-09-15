@@ -75,13 +75,16 @@ article
 
     h1, h2, h3, h4, h5, h6 {
         color:#335;
+        font-weight: bold;
 
-        &:before {
-            // Make the headings stand a little bit more out
-            content: "#";
-            color:@color-success;
-            margin-right:20px;
-            margin-left:-40px;
+        @media (min-width:800px) {
+            &:before {
+                // Make the headings stand a little bit more out
+                content: "#";
+                color:@color-success;
+                margin-right:15px;
+                margin-left:-40px;
+            }
         }
     }
 
