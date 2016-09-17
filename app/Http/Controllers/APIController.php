@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Artisan;
+
+// Composer dependencies to run from PHP
+use Composer\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
 
 use ZipArchive;
 
@@ -25,7 +30,7 @@ class APIController extends Controller
     {
         // This function gets the ZIP and extracts its contents to the correct dirs
         $archive = 'https://github.com/Zettlr/wiki/archive/' . $version . '.zip';
-        $dest = 'tmp.zip';
+        $dest = base_path() . '/storage/app/tmp.zip';
         $foldername = false;
 
         $ch = curl_init();
@@ -118,7 +123,7 @@ class APIController extends Controller
 
         // Remove old files
         foreach($diff['remove'] as $file) {
-            File::delete(base_path() . $file, File::get(base_path() . '/storage/app/update_files/' . $file));
+            File::delete(base_path() . $file);
         }
 
         // Now the pure folder structure of this installation resembles the
@@ -135,7 +140,7 @@ class APIController extends Controller
         // new tables, alterations and the like.
 
         // We need to --force artisan to prevent security questions.
-        Artisan::call('migrate --force');
+        Artisan::call('migrate', ['--force' => true]);
 
         return response()->json(['Database migration successful!', 200]);
     }
