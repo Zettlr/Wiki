@@ -51,7 +51,13 @@ Route::group(['prefix' => 'admin'], function() {
 
     // updates
     Route::get ('/updates', 'UpdateController@index');
-    Route::get ('/updates/upgrade', 'UpdateController@doUpdate');
+    Route::get ('/updates/upgrade/{version?}', 'UpdateController@runUpdate');
+
+    Route::get ('/api/downloadUpdate/{version}', 'APIController@downloadUpdate');
+    Route::get ('/api/moveUpdate', 'APIController@moveUpdate');
+    Route::get ('/api/migrateDatabase', 'APIController@migrateDatabase');
+    Route::get ('/api/runComposer', 'APIController@runComposer');
+    Route::get ('/api/finalize', 'APIController@finalize');
 });
 
 

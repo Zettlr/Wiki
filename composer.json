@@ -10,7 +10,9 @@
         "graham-campbell/markdown": "^6.1",
         "oyejorge/less.php": "v1.7.0.10",
         "league/html-to-markdown": "^4.2",
-        "comodojo/zip": "^2.0"
+        "comodojo/zip": "^2.0",
+        "nathanlesage/envedit": "^0.1.0",
+        "composer/composer": "^1.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

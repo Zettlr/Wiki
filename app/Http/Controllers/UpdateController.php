@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 use App\Http\Requests;
 
 use GrahamCampbell\Markdown\Facades\Markdown;
 
 use DateTime;
+use ZipArchive;
+
+use Dotenv\Dotenv;
 
 class UpdateController extends Controller
 {
@@ -18,7 +22,6 @@ class UpdateController extends Controller
         $page->title = trans('ui.backend.updates.update');
 
         // This function only checks for updates and displays info
-        // $url = "https://api.github.com/repos/Zettlr/wiki/git/refs/tags";
         $url = "https://api.github.com/repos/Zettlr/wiki/releases";
 
         $response = $this->queryGitHub($url);
@@ -74,40 +77,101 @@ class UpdateController extends Controller
             $published = $published->format('d.m.Y');
         }
 
-        return view('admin.updates', compact('page', 'tags', 'newVersion', 'update', 'published', 'changelog'));
+        return view('admin.updates', compact('page', 'tags', 'newVersion', 'update', 'published', 'changelog', 'dirMap'));
     }
 
-    public function runUpdate()
+    public function runUpdate($version = null)
     {
-        // This function actually runs the update.
-        // It consists of these steps:
-        //
-        // 1. Download the ZIP file
-        // 2. Extract the ZIP file
-        // 3. Move all files to their new location (+ overwriting)
-        // 4. Run composer update to sync the installed packages
-        // 5. Run artisan migrate to migrate any changes to the database
-        // 6. Cleanup: Delete ZIP and extracted directory
-        // 7. Add new .env-variable to APP_VERSION.
+        if(null === $version) {
+            return redirect('/admin/updates');
+        }
 
-        // First try out differ
-        // https://github.com/sebastianbergmann/diff/blob/master/src/Line.php
-        //
-        // Following should happen: You create a complete tree, ignoring
-        // storage, config and .env-file. And database. You know, everything
-        // that lies inside the gitignore-files should NOT be touched.
-        // Important to do it RELATIVE (because the base path will be NOT the
-        // same).
-        // THEN you should do THE SAME with the extracted files.
-        // Then get a diff.
-        //
-        // According to Line.php ADDED -> 1, REMOVED -> 2 and UNCHANGED -> 3
-        // That will be retrievable from the created parser-object (actually, not
-        // the differ itself). And then do as it commands:
-        // REMOVE every file with a 2, ADD every file (from extract to base)
-        // that has 1, ignore the 3.
-        //
-        // Then all new files
+        $page = new \stdClass();
+        $page->title = "Updating &hellip;";
+
+        // 1. Download the ZIP
+        $folder = $this->downloadZIP($version);
+        if(!$folder) { // folder will be "false" on error
+            dd("Couldn't download or extract ZIP.");
+        }
+
+        // Rename the directory to a unified name
+        rename(base_path() . '/storage/app/' . $folder, base_path() . '/storage/app/update_files');
+
+        // ZipArchive outputs the root dir with a trailing slash -> remove to unify
+        $folder = substr($folder, 0, strlen($folder) - 1);
+
+        // 3. Create Diff for patching
+
+        // We have to ignore directories with user-generated data and files
+        // the user may have edited (such as SQLite, .env or .htaccess) that
+        // do not reside in any of the ignored directories.
+        $ignoreDirectories = array('storage', '.git', 'node_modules', 'vendor');
+        $ignoreFiles = array(env('DB_DATABASE', 'database.sqlite'), '.env', '.htaccess');
+
+        // Map old directory
+        $oldDir = $this->flatten($this->dirToArray(base_path(),
+        $ignoreDirectories,
+        $ignoreFiles, base_path()));
+
+        // Map new directory
+        $newDir = $this->flatten($this->dirToArray(base_path() . '/storage/app/' . $folder,
+        [],
+        $ignoreFiles, base_path() . '/storage/app/' . $folder));
+
+        $diff = $this->diff($oldDir, $newDir);
+
+        // So, we now can get the ZIP, get the diff and all we have to do is:
+        // 1. Overwrite/remove/add files
+        // 2. Let composer install run to update vendor packages
+        // 3. Let artisan migrate run to update database
+        // 4. Delete the $folder
+        // 5. Write the new version to .env
+
+        // Do something
+
+        // Begin adding new files
+        foreach($diff['add'] as $file) {
+            File::put(base_path() . $file);
+        }
+
+        // Change files
+        foreach($diff['change'] as $file) {
+            File::put(base_path() . $file);
+        }
+
+        // Remove old files
+        foreach($diff['remove'] as $file) {
+            File::delete(base_path() . $file);
+        }
+
+        // Now let artisan update the database (force to overwrite any security question)
+        Artisan::call('migrate --force');
+
+        // Finally, do a composer run
+        // Composer\Factory::getHomeDir() method
+        // needs COMPOSER_HOME environment variable set
+        putenv('COMPOSER_HOME=' . base_path() . '/vendor/bin/composer');
+
+        chdir(base_path());
+        // call `composer install` command programmatically
+        $input = new ArrayInput(array('command' => 'install', '--no-dev' => true));
+        $application = new Application();
+        $application->setAutoExit(false); // prevent `$application->run` method from exitting the script
+        $application->run($input);
+
+        // Now we should be ready to rumble again -> update the env file
+        $editor = new EnvEdit();
+        $editor->read();
+        $editor->setVars(['APP_VERSION' => $version]);
+        $editor->write();
+
+        // Cleanup
+        File::deleteDirectory(base_path() . '/storage/app/' . $folder);
+
+        // If everything went smoothely, redirect to the updates page
+        return redirect('/admin/updates');
+
     }
 
     public function queryGitHub($url = "")

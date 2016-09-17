@@ -162,7 +162,6 @@ return [
          * Additional providers
          */
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
-        //Comodojo\Zip\Zip::class,
 
     ],
 

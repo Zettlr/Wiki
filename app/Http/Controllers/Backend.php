@@ -10,6 +10,7 @@ use App\Http\Requests;
 
 use App\PageIndex;
 use App\User;
+use NathanLeSage\EnvEdit;
 
 use Auth;
 
@@ -31,7 +32,7 @@ class Backend extends Controller
     * @return View The dashboard view
     */
     public function index()
-    { // dd(session()->all());
+    {
         $page = new \stdClass();
         $stats = new \stdClass();
         $page->title = "Dashboard";
@@ -112,53 +113,14 @@ class Backend extends Controller
         // Now create the new contents
 
         // First read in the current .env-file
-        $oldEnv = File::get(base_path() . '/.env');
-        // Arrayfy the file
-        $env = [];
-        foreach(preg_split("/((\r?\n)|(\r\n?))/", $oldEnv) as $line){
-            $i = 0;
-            $fieldname = '';
-            $value = '';
+        //
+        $env = new EnvEdit();
+        $env->read();
 
-            for(; $i < strlen($line); $i++)  {
-                if($line[$i] !== '=') {
-                    $fieldname .= $line[$i];
-                } else {
-                    break;
-                }
-            }
-            $value = substr($line, $i+1);
+        // Update the variables
+        $env->setVars($request->all());
 
-            if(strlen($fieldname) > 0) {
-                $env[$fieldname] = $value;
-            }
-        }
-
-        // Now write all fields with the new values
-        foreach($request->all() as $name => $field) {
-            if(array_key_exists($name, $env)) {
-                if($field == "") {
-                    // Empty fields must be zero
-                    $field = "null";
-                }
-                if( preg_match('/\s/',$field)) {
-                    // Whitespace-containing fields must be escaped
-                    $field = '"' . $field . '"';
-                }
-                // Also any potential special chars MUST be escaped as well
-                $env[$name] = $field;
-            }
-        }
-
-        // Re-stringify the file
-        $newEnv = "";
-        foreach($env as $key => $value) {
-            $newEnv .= $key . '=' . $value . "\n";
-        }
-
-        // And write it!
-        $written = File::put(base_path() . '/.env', $newEnv);
-        if($written) {
+        if($env->write()) {
             return redirect('/admin/settings');
         } else {
             return redirect('/admin/settings')->withErrors(['save' => 'Something went wrong writing the .env-file!']);

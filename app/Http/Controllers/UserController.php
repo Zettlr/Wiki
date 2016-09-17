@@ -47,7 +47,7 @@ class UserController extends Controller
         }
 
         if($success) {
-            return redirect('/');
+            return redirect()->intended(); //redirect('/');
         } else {
             return redirect('/login')->withInput()->withErrors(['auth' => 'We could not find a user with these credentials. Please double check.']);
         }
@@ -136,6 +136,6 @@ class UserController extends Controller
     {
         Auth::logout();
 
-        return redirect('/login');
+        return redirect()->intended(); // redirect('/login');
     }
 }
