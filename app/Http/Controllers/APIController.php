@@ -162,7 +162,7 @@ class APIController extends Controller
         return response()->json(['Composer run successful!', 200]);
     }
 
-    public function finalize()
+    public function finalize($version)
     {
         // Now we should be ready to rumble again -> update the env file
         $editor = new EnvEdit();

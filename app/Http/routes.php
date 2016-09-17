@@ -57,7 +57,7 @@ Route::group(['prefix' => 'admin'], function() {
     Route::get ('/api/moveUpdate', 'APIController@moveUpdate');
     Route::get ('/api/migrateDatabase', 'APIController@migrateDatabase');
     Route::get ('/api/runComposer', 'APIController@runComposer');
-    Route::get ('/api/finalize', 'APIController@finalize');
+    Route::get ('/api/finalize/{version}', 'APIController@finalize');
 });
 
 

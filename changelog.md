@@ -1,3 +1,12 @@
+# v0.1.4
+
+* Minor patch for the last dependency issues
+
+# v0.1.3
+
+* Fixed dependency issues with the new UpdateController
+* Added capability of automated updates
+
 # v.0.1.2
 
 * Fixed an error that in "closed editing mode" (Guests are not able to edit),

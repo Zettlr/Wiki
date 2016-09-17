@@ -19,9 +19,6 @@
                 {{ trans('ui.backend.updates.patch', ['current' => env('APP_VERSION', 'v0.0.0'), 'new' => $newVersion, 'published' => $published]) }}
             </div>
         @endif
-        <div>
-            {!! $changelog or '' !!}
-        </div>
         <p>
             <a id="commenceUpdate">{{ trans('ui.backend.updates.commence') }}</a>
         </p>
@@ -30,6 +27,9 @@
             </div>
             <ul id="updateProgress">
             </ul>
+        </div>
+        <div>
+            {!! $changelog or '' !!}
         </div>
     @else
         <div class="alert muted">
@@ -107,7 +107,7 @@
             // This will be passed to the setup.php as an action to execute
             'action': 'finalize',
             // In this variable the retrieved input will be put.
-            'argv': ''
+            'argv': "{{ $newVersion }}"
         },
     ];
 
@@ -148,13 +148,13 @@
             // Call the controller and execute action
             $.get("{{ url('/admin/api/')}}/" + step.action + "/" + step.argv, function() {})
             .done($.proxy(function(data) {
-                $('#next').text(data[0]).addClass('success');
+                $('#next').text(data[0]).addClass('bg-success');
                 $('#next').attr('id', '');
                 this.goodtogo = true;
                 this.next();
             }, this))
             .fail($.proxy(function(data) {
-                $('#next').text(data[0]).addClass('error');
+                $('#next').text(data[0]).addClass('bg-error');
             }, this));
         } else {
             // No action required -> commence the next step
