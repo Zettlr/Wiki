@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Artisan;
 use Composer\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 
+use League\HTMLToMarkdown\HtmlConverter;
+
+use Validator;
+use App\Page;
+
 use ZipArchive;
 
 use NathanLeSage\EnvEdit;
@@ -25,6 +30,51 @@ class APIController extends Controller
             $this->middleware('auth:api');
         }
     }
+
+    public function postEditAPI(Request $request)
+    {
+        // Create a validator
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:255',
+            'content' => 'required|min:10'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([$validator, 400]); // Bad request
+        }
+
+        $page = Page::where('slug', $request->slug)->get()->first();
+
+        if($page === null) {
+            return redirect('/');
+        }
+
+        // Everything good? Edit!
+        $page->title = $request->title;
+        $page->content = $request->content;
+        // If the page has been updated via ContentTools we have to convert to
+        // markdown (first to remove the editing classes and second to Simply
+        // save space on the server).
+        $converter = new HtmlConverter();
+        $page->content = $converter->convert($page->content);
+        $page->save();
+
+        // Now update all links this page may link to
+        $pageCollection = new Collection();
+        $pageCollection->push($page);
+        $this->updateLinks($pageCollection);
+
+        // One last thing to do: Update the search index. Therefore we will "call"
+        // the rebuilder from within this function via a route we will process
+        // internally (i.e. as if we would've visit this route)
+        $indexingRequest = Request::create('/searchEngine/rebuild/' . $page->id, 'GET');
+        $response = \Route::dispatch($indexingRequest);
+        return response()->json([$page->content, 200]);
+    }
+
+    /**
+    *  Update functions
+    */
 
     public function downloadUpdate($version)
     {

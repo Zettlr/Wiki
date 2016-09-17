@@ -319,6 +319,70 @@ class Backend extends Controller
         return redirect('/admin/account');
     }
 
+    public function updates()
+    {
+        $page = new \stdClass();
+        $page->title = trans('ui.backend.updates.update');
+
+        // This function only checks for updates and displays info
+        $url = "https://api.github.com/repos/Zettlr/wiki/releases";
+
+        $response = $this->queryGitHub($url);
+        $tags = [];
+
+        foreach($response as $r) {
+            $tags[] = ['tag_name' => $r['tag_name'], 'published_at' => $r['published_at']];
+        }
+
+        // Now we have all tags. Let's check if we can update
+        $currentVersion = env('APP_VERSION', 'v0.0.0');
+        $newVersion = '';
+        $update = 'non'; // Values: maj, min, pat, non
+        $published = ''; // When the newest update has been published
+
+        foreach($tags as $tag) {
+            $t = explode('.', substr($tag['tag_name'], 1));
+            $c = explode('.', substr($currentVersion, 1));
+
+            if(intval($t[0]) > intval($c[0])) { // We have a major new version
+                $update = 'maj';
+                $newVersion = $tag['tag_name'];
+                $published = $tag['published_at'];
+                // Break because we've found a newer version
+                break;
+            } elseif(intval($t[1]) > intval($c[1])) { // We have a minor new
+                $update = 'min';
+                $newVersion = $tag['tag_name'];
+                $published = $tag['published_at'];
+                break;
+            } elseif(intval($t[2]) > intval($c[2])) { // We have a patch
+                $update = 'pat';
+                $newVersion = $tag['tag_name'];
+                $published = $tag['published_at'];
+                break;
+            } else { // No new update
+                $update = 'non';
+            }
+        }
+
+        if($update != 'non') {
+            // Pull the new changelog from the server
+            $url = 'https://api.github.com/repos/Zettlr/wiki/contents/changelog.md';
+
+            $response = $this->queryGitHub($url);
+
+            // Why ever they base64-encode the contents of simple text files ...
+            $changelog = base64_decode($response['content']);
+
+            $changelog = Markdown::convertToHtml($changelog);
+
+            $published = new DateTime($published);
+            $published = $published->format('d.m.Y');
+        }
+
+        return view('admin.updates', compact('page', 'tags', 'newVersion', 'update', 'published', 'changelog', 'dirMap'));
+    }
+
     /************************************
     * After here only helper functions
     ************************************/
@@ -384,5 +448,22 @@ class Backend extends Controller
         $endIndex = strpos($size, ".")+3;
 
         return substr( $size, 0, $endIndex).' '.$units[$i];
+    }
+
+    public function queryGitHub($url = "")
+    {
+        if($url === "") {
+            return -1;
+        }
+
+        $curl = curl_init($url);
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_USERAGENT, "Updater");
+
+        $return = curl_exec($curl);
+        curl_close($curl);
+
+        return json_decode($return, true);
     }
 }

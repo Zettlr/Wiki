@@ -1,13 +1,21 @@
+# v0.2.0
+
+* Implemented a GUI updater to allow comfortable updates.
+* Added better support for .env-files.
+* Improved the API for XHR-Requests.
+* Minor style fixes.
+* Major cleanup of the codebase to streamline the application.
+
 # v0.1.4
 
-* Minor patch for the last dependency issues
+* Minor patch for the last dependency issues.
 
 # v0.1.3
 
-* Fixed dependency issues with the new UpdateController
-* Added capability of automated updates
+* Fixed dependency issues with the new UpdateController.
+* Added capability of automated updates.
 
-# v.0.1.2
+# v0.1.2
 
 * Fixed an error that in "closed editing mode" (Guests are not able to edit),
   actually _only_ guests were able to edit.

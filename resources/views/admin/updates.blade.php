@@ -62,51 +62,31 @@
             'argv': "{{ $newVersion }}"
         },
         {
-            // Title
             'title': 'Copying files.',
-            // What the user needs to do or to know
             'instructions': 'Update is currently copying the files to the new location.',
-            // Only makes sense when an action is being performed.
             'success': '',
-            // This will be passed to the setup.php as an action to execute
             'action': 'moveUpdate',
-            // In this variable the retrieved input will be put.
             'argv': ''
         },
         {
-            // Title
             'title': 'Migrating database.',
-            // What the user needs to do or to know
             'instructions': 'Updating the database to the new version.',
-            // Only makes sense when an action is being performed.
             'success': '',
-            // This will be passed to the setup.php as an action to execute
             'action': 'migrateDatabase',
-            // In this variable the retrieved input will be put.
             'argv': ''
         },
         {
-            // Title
             'title': 'Updating third-party packages.',
-            // What the user needs to do or to know
             'instructions': 'We are currently updating potential new third party packages, zettlrWiki relies upon.',
-            // Only makes sense when an action is being performed.
             'success': '',
-            // This will be passed to the setup.php as an action to execute
             'action': 'runComposer',
-            // In this variable the retrieved input will be put.
             'argv': ''
         },
         {
-            // Title
             'title': 'Cleaning up.',
-            // What the user needs to do or to know
             'instructions': 'Updater is cleaning up files and finalizing the update process. We are nearly done!',
-            // Only makes sense when an action is being performed.
             'success': '',
-            // This will be passed to the setup.php as an action to execute
             'action': 'finalize',
-            // In this variable the retrieved input will be put.
             'argv': "{{ $newVersion }}"
         },
     ];
@@ -128,7 +108,8 @@
         if(this.i == this.steps.length - 1) {
             // Updater has finished.
             // Let's reboot the application by reloading
-            window.location = "{{ url('/admin/updates') }}";
+            $('#description').html('<a href="{{ url('/admin/updates') }}">Please reload the page to finish update!</a>');
+            return;
         }
 
         this.begin(this.steps[++this.i]);
@@ -146,7 +127,7 @@
         // Now commence the action and register the callback
         if(step.action !== null) {
             // Call the controller and execute action
-            $.get("{{ url('/admin/api/')}}/" + step.action + "/" + step.argv, function() {})
+            $.get("{{ url('/api/')}}/" + step.action + "/" + step.argv, function() {})
             .done($.proxy(function(data) {
                 $('#next').text(data[0]).addClass('bg-success');
                 $('#next').attr('id', '');
