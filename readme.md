@@ -1,5 +1,9 @@
 # ZettlrWiki
 
+> ZettlrWiki hasn't been updated in five years, and will not receive any updates.
+
+***
+
 ZettlrWiki is a minimal wiki system that combines the power to manage content
 like a wiki and displays it neatly for maximum readability. It focuses on text
 and navigability and on fast changing and creating pages. ZettlrWiki has been
